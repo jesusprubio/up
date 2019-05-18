@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Now the README is shown in crates.io site.
 - Other minor Cargo setup fields, ie: keywords, categories, etc.
 - Travis setup.
-- Developer guide dependencies istall.
+- Developer guide dependencies install.
 
 ## [0.1.0] - 2019-05-18
 
