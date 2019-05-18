@@ -3,6 +3,7 @@ name = "online"
 version = "0.1.2-alpha.0"
 authors = ["Jesús Pérez <jesusprubio@member.fsf.org>"]
 edition = "2018"
+documentation = "https://docs.rs/online"
 include = ["src/**/*", "Cargo.toml"]
 
 description = "📶 Library to check your Internet connectivity"
