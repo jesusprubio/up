@@ -7,6 +7,7 @@ include = ["src/**/*", "Cargo.toml"]
 
 description = "📶 Library to check your Internet connectivity"
 repository = "https://github.com/jesusprubio/online.git"
+readme = "README.md"
 keywords = [
   "connection",
   "up",
