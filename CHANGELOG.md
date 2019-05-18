@@ -16,9 +16,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.1.2] - 2019-05-19
+
+### 🐛 Fixed
+
+- Emojis in crates.io site.
+- Link to the documentation in crates.io site.
+
 ## [0.1.1] - 2019-05-19
 
-### 🐛 **Fixed
+### 🐛 Fixed
 
 - Now the README is shown in crates.io site.
 - Other minor Cargo setup fields, ie: keywords, categories, etc.
@@ -31,6 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release.
 
-[unreleased]: https://github.com/jesusprubio/pwr/compare/0.1.1...HEAD
+[unreleased]: https://github.com/jesusprubio/pwr/compare/0.1.2...HEAD
+[0.1.2]: https://github.com/jesusprubio/pwr/compare/0.1.0...0.1.2
 [0.1.1]: https://github.com/jesusprubio/pwr/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/jesusprubio/pwr/compare/f855db0341fd9e60f30c507ea5ac92d139b5b7b3...0.1.0
