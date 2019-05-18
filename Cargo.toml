@@ -1,6 +1,6 @@
 [package]
 name = "online"
-version = "0.1.0"
+version = "0.1.1-alpha.0"
 authors = ["Jesús Pérez <jesusprubio@member.fsf.org>"]
 edition = "2018"
 include = ["src/**/*", "Cargo.toml"]
