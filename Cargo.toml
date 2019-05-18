@@ -1,0 +1,39 @@
+[package]
+name = "online"
+version = "0.0.0"
+authors = ["Jesús Pérez <jesusprubio@member.fsf.org>"]
+edition = "2018"
+include = ["src/**/*", "Cargo.toml"]
+
+description = "📶 Library to check your Internet connectivity"
+repository = "https://github.com/jesusprubio/online.git"
+categories = [
+  "connection",
+  "up",
+  "check",
+  "online",
+  "tcp",
+  "dns",
+  "internet",
+  "reachability"
+]
+license = "MIT"
+
+[badges]
+travis-ci = { repository = "jesusprubio/online" }
+
+[package.metadata.commands]
+deps = "cargo install cargo-edit cargo-cmd cargo-audit cargo-release cargo-outdated cargo-sync-readme & rustup component add rustfmt clippy"
+format = "cargo fmt"
+postformat = "cargo clippy"
+readme = "cargo sync-readme -z"
+pretest = "cargo cmd format && cargo outdated && cargo audit && cargo readme"
+test = "cargo test"
+prepublish = "cargo cmd test"
+publish = "cargo release"
+
+[dependencies]
+simple-error = "0.1.13"
+
+[dev-dependencies]
+pretty_assertions="0.6.1"

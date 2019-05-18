@@ -1,0 +1,101 @@
+/**
+ * Copyright (c) 2019, Jesús Rubio <jesusprubio@member.fsf.org>
+ *
+ * This source code is licensed under the MIT License found in
+ * the LICENSE.txt file in the root directory of this source tree.
+ */
+
+use std::net::{ TcpStream, SocketAddr };
+use std::time::Duration;
+
+extern crate simple_error;
+use simple_error::SimpleError;
+
+
+const DEFAULT_TIMEOUT:u64 = 3;
+
+
+fn connect(addr: &SocketAddr, timeout: Option<u64>) -> Result<bool, SimpleError> {
+  let duration = match timeout {
+    Some(tout) => Duration::new(tout, 0),
+    _ => Duration::new(DEFAULT_TIMEOUT, 0)
+  };
+
+  match TcpStream::connect_timeout(addr, duration) {
+    Ok(_) => Ok(true),
+    Err(e) => Err(SimpleError::from(e))
+  }
+}
+
+/// It uses HTTP and DNS as fallback.
+///
+/// * `timeout` - Number of seconds to wait for a response (default: 3)
+pub fn online(timeout: Option<u64>) -> Result<bool, SimpleError> {
+//! ```sh
+//! extern crate online;
+//! use online::*;
+//!
+//! assert_eq!(online(None), Ok(true));
+//! assert_eq!(online(Some(6)), Ok(true));
+//! ```
+
+  // HTTP by default (icanhazip.com).
+  let addr = SocketAddr::from(([5, 196, 192, 216], 80));
+
+  match connect(&addr, timeout) {
+    Ok(_) => Ok(true),
+    Err(e) => match e.as_str() {
+      "Network is unreachable (os error 101)" => Ok(false),
+      "connection timed out" => {
+        // DNS as fallback(OpenDNS).
+        let addr_fallback = SocketAddr::from(([208, 67, 222, 222], 53));
+
+        match connect(&addr_fallback, timeout) {
+          Ok(_) => Ok(true),
+          Err(err) => match err.as_str() {
+            "connection timed out" => Ok(false),
+            _ => Err(err)
+          }
+        }
+      }
+      _ => Err(e)
+    }
+  }
+}
+
+
+#[cfg(test)]
+mod connect {
+  use super::connect;
+  use std::net::{ SocketAddr };
+
+  #[test]
+  fn should_work_no_parameters() {
+    let addr = SocketAddr::from(([8, 8, 8, 8], 53));
+
+    assert_eq!(connect(&addr, None), Ok(true));
+  }
+
+  #[test]
+  fn should_work_timeout() {
+    let addr = SocketAddr::from(([8, 8, 8, 8], 53));
+
+    assert_eq!(connect(&addr, Some(6)), Ok(true));
+  }
+
+  #[test]
+  #[should_panic(expected = "connection timed out")]
+  fn should_fail_unreachable() {
+    let addr = SocketAddr::from(([8, 8, 8, 8], 8888));
+
+    connect(&addr, None).unwrap();
+  }
+
+  #[test]
+  #[should_panic(expected = "connection timed out")]
+  fn should_fail_unreachable_timeout() {
+    let addr = SocketAddr::from(([8, 8, 8, 8], 8888));
+
+    connect(&addr, Some(6)).unwrap();
+  }
+}
