@@ -9,6 +9,7 @@ Some development tools are needed to be ready.
 ```sh
 git clone https://github.com/jesusprubio/online
 cd online
+cargo install cargo-cmd
 cargo cmd deps
 ```
 
