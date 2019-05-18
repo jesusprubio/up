@@ -16,7 +16,7 @@
 
 ## Use
 
-:pencil: Please visit [the full documentation](https://docs.rs/online) if you want to learn the details.
+📝 Please visit [the full documentation](https://docs.rs/online) if you want to learn the details.
 
 <!-- cargo-sync-readme start -->
 
@@ -32,4 +32,4 @@ assert_eq!(online(Some(6)), Ok(true));
 
 ## Contributing
 
-:sunglasses: If you want to help please take a look to [this file](.github/CONTRIBUTING.md).
+😎 If you want to help please take a look to [this file](.github/CONTRIBUTING.md).
