@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Emojis in crates.io site.
 - Link to the documentation in crates.io site.
+- Clippy setup update, failing in Travis.
 
 ## [0.1.1] - 2019-05-19
 
