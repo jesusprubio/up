@@ -5,6 +5,10 @@ rust:
   - beta
   - nightly
 
+before_install:
+  - cargo install cargo-cmd
+  - cargo cmd deps
+
 matrix:
   allow_failures:
     - rust: nightly
