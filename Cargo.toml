@@ -28,7 +28,7 @@ readme = "cargo sync-readme -z"
 pretest = "cargo cmd format && cargo outdated && cargo audit && cargo readme"
 test = "cargo test"
 prepublish = "cargo cmd test"
-publish = "cargo release"
+publish = "cargo release minor"
 
 [dependencies]
 simple-error = "0.1.13"
