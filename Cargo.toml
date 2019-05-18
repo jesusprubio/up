@@ -10,12 +10,9 @@ repository = "https://github.com/jesusprubio/online.git"
 categories = [
   "connection",
   "up",
-  "check",
   "online",
   "tcp",
-  "dns",
-  "internet",
-  "reachability"
+  "dns"
 ]
 license = "MIT"
 
