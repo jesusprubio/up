@@ -4,7 +4,6 @@
 [![stability-stable](https://img.shields.io/badge/stability-stable-green.svg)](https://github.com/emersion/stability-badges#stable)
 [![Latest version](https://img.shields.io/crates/v/log.svg)](https://crates.io/crates/online)
 [![Documentation](https://docs.rs/online/badge.svg)](https://docs.rs/online)
-![License](https://img.shields.io/crates/l/online.svg)
 
 📶 Library to check your Internet connectivity.
 
