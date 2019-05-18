@@ -7,13 +7,14 @@ include = ["src/**/*", "Cargo.toml"]
 
 description = "📶 Library to check your Internet connectivity"
 repository = "https://github.com/jesusprubio/online.git"
-categories = [
+keywords = [
   "connection",
   "up",
   "online",
   "tcp",
   "dns"
 ]
+categories = ["network-programming"]
 license = "MIT"
 
 [badges]
