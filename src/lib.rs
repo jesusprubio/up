@@ -28,7 +28,7 @@ fn connect(addr: &SocketAddr, timeout: Option<u64>) -> Result<bool, SimpleError>
 ///
 /// * `timeout` - Number of seconds to wait for a response (default: 3)
 pub fn online(timeout: Option<u64>) -> Result<bool, SimpleError> {
-    //! ```sh
+    //! ```
     //! extern crate online;
     //! use online::*;
     //!
