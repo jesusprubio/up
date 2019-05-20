@@ -26,7 +26,7 @@ travis-ci = { repository = "jesusprubio/online" }
 deps = "cargo install cargo-edit cargo-audit cargo-release cargo-outdated cargo-sync-readme && rustup component add rustfmt clippy"
 format = "cargo fmt"
 postformat = "cargo clippy"
-readme = "cargo sync-readme -z"
+readme = "cargo sync-readme"
 pretest = "cargo cmd format && cargo outdated && cargo audit && cargo cmd readme"
 test = "cargo test"
 prepublish = "cargo cmd test"
