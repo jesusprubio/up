@@ -12,6 +12,7 @@ extern crate pretty_assertions;
 #[cfg(test)]
 mod am {
     use online::*;
+    use std::time::Duration;
 
     #[test]
     fn should_work_no_parameters() {
@@ -20,6 +21,8 @@ mod am {
 
     #[test]
     fn should_work_timeout() {
-        assert_eq!(online(Some(6)), Ok(true));
+        let timeout = Duration::new(6, 0);
+
+        assert_eq!(online(Some(timeout)), Ok(true));
     }
 }

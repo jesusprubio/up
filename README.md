@@ -8,8 +8,8 @@
 
 <!-- markdownlint-disable MD033 -->
 <div align="center">
-	<p><img src="https://media.giphy.com/media/pYyFAHLW0zJL2/giphy.gif" alt="gif icon"></p>
-	<p><sub>🤙 Ping me on <a href="https://twitter.com/jesusprubio"><code>Twitter</code></a> if you like this project</sub></p>
+<p><img src="https://media.giphy.com/media/pYyFAHLW0zJL2/giphy.gif" alt="gif icon"></p>
+<p><sub>🤙 Ping me on <a href="https://twitter.com/jesusprubio"><code>Twitter</code></a> if you like this project</sub></p>
 </div>
 <!-- markdownlint-enable MD033 -->
 
@@ -19,12 +19,18 @@
 
 <!-- cargo-sync-readme start -->
 
-```sh
+```rust
+use std::time::Duration;
+
 extern crate online;
 use online::*;
 
 assert_eq!(online(None), Ok(true));
-assert_eq!(online(Some(6)), Ok(true));
+
+// with timeout
+let timeout = Duration::new(6, 0);
+
+assert_eq!(online(Some(timeout)), Ok(true));
 ```
 
 <!-- cargo-sync-readme end -->

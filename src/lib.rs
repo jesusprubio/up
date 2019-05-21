@@ -12,9 +12,9 @@ use simple_error::SimpleError;
 
 const DEFAULT_TIMEOUT: u64 = 3;
 
-fn connect(addr: &SocketAddr, timeout: Option<u64>) -> Result<bool, SimpleError> {
+fn connect(addr: &SocketAddr, timeout: Option<Duration>) -> Result<bool, SimpleError> {
     let duration = match timeout {
-        Some(tout) => Duration::new(tout, 0),
+        Some(tout) => tout,
         _ => Duration::new(DEFAULT_TIMEOUT, 0),
     };
 
@@ -27,14 +27,20 @@ fn connect(addr: &SocketAddr, timeout: Option<u64>) -> Result<bool, SimpleError>
 /// It uses HTTP and DNS as fallback.
 ///
 /// * `timeout` - Number of seconds to wait for a response (default: 3)
-pub fn online(timeout: Option<u64>) -> Result<bool, SimpleError> {
-    //! ```
-    //! extern crate online;
-    //! use online::*;
-    //!
-    //! assert_eq!(online(None), Ok(true));
-    //! assert_eq!(online(Some(6)), Ok(true));
-    //! ```
+pub fn online(timeout: Option<Duration>) -> Result<bool, SimpleError> {
+//! ```rust
+//! use std::time::Duration;
+//!
+//! extern crate online;
+//! use online::*;
+//!
+//! assert_eq!(online(None), Ok(true));
+//!
+//! // with timeout
+//! let timeout = Duration::new(6, 0);
+//!
+//! assert_eq!(online(Some(timeout)), Ok(true));
+//! ```
 
     // HTTP by default (icanhazip.com).
     let addr = SocketAddr::from(([5, 196, 192, 216], 80));
@@ -62,6 +68,8 @@ pub fn online(timeout: Option<u64>) -> Result<bool, SimpleError> {
 
 #[cfg(test)]
 mod connect {
+    use std::time::Duration;
+
     use super::connect;
     use std::net::SocketAddr;
 
@@ -75,8 +83,9 @@ mod connect {
     #[test]
     fn should_work_timeout() {
         let addr = SocketAddr::from(([8, 8, 8, 8], 53));
+        let timeout = Duration::new(6, 0);
 
-        assert_eq!(connect(&addr, Some(6)), Ok(true));
+        assert_eq!(connect(&addr, Some(timeout)), Ok(true));
     }
 
     #[test]
@@ -91,7 +100,8 @@ mod connect {
     #[should_panic(expected = "connection timed out")]
     fn should_fail_unreachable_timeout() {
         let addr = SocketAddr::from(([8, 8, 8, 8], 8888));
+        let timeout = Duration::new(6, 0);
 
-        connect(&addr, Some(6)).unwrap();
+        connect(&addr, Some(timeout)).unwrap();
     }
 }
