@@ -22,14 +22,12 @@
 ```rust
 use std::time::Duration;
 
-extern crate online;
 use online::*;
 
 assert_eq!(online(None), Ok(true));
 
 // with timeout
 let timeout = Duration::new(6, 0);
-
 assert_eq!(online(Some(timeout)), Ok(true));
 ```
 
