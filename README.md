@@ -12,12 +12,10 @@
   <a href="https://travis-ci.org/jesusprubio/online">
     <img alt="Build Status" src="https://travis-ci.org/jesusprubio/online.svg?branch=master">
   </a>
-  <a href="https://www.npmjs.com/package/signale">
-    <img alt="Stability stable" src="https://img.shields.io/crates/v/log.svg">
-  </a>
   <a href="https://crates.io/crates/online">
-    <img alt="Latest version" src="https://img.shields.io/badge/stability-stable-green.svg">
+    <img alt="Latest version" src="https://img.shields.io/crates/v/online.svg">
   </a>
+  <img alt="Stability stable" src="https://img.shields.io/badge/stability-stable-green.svg">
 </p>
 <p align="center">
   <sub>🤙 Ping me on <a href="https://twitter.com/jesusprubio"><code>Twitter</code></a> if you like this project</sub>
