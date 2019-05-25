@@ -7,7 +7,6 @@
 use std::net::{SocketAddr, TcpStream};
 use std::time::Duration;
 
-extern crate simple_error;
 use simple_error::SimpleError;
 
 const DEFAULT_TIMEOUT: u64 = 3;
