@@ -1,17 +1,27 @@
-# online
+<h1 align="center">online</h1>
 
-[![Build Status](https://travis-ci.org/jesusprubio/online.svg?branch=master)](https://travis-ci.org/jesusprubio/online)
-[![stability-stable](https://img.shields.io/badge/stability-stable-green.svg)](https://github.com/emersion/stability-badges#stable)
-[![Latest version](https://img.shields.io/crates/v/log.svg)](https://crates.io/crates/online)
+<h4 align="center">
+  📶 Library to check your Internet connectivity
+</h4>
 
-📶 Library to check your Internet connectivity.
-
-<!-- markdownlint-disable MD033 -->
 <div align="center">
-<p><img src="https://media.giphy.com/media/pYyFAHLW0zJL2/giphy.gif" alt="gif icon"></p>
-<p><sub>🤙 Ping me on <a href="https://twitter.com/jesusprubio"><code>Twitter</code></a> if you like this project</sub></p>
+  <img alt="Logo" src="https://media.giphy.com/media/pYyFAHLW0zJL2/giphy.gif" width="40%">
 </div>
-<!-- markdownlint-enable MD033 -->
+
+<p align="center">
+  <a href="https://travis-ci.org/jesusprubio/online">
+    <img alt="Build Status" src="https://travis-ci.org/jesusprubio/online.svg?branch=master">
+  </a>
+  <a href="https://www.npmjs.com/package/signale">
+    <img alt="Stability stable" src="https://img.shields.io/crates/v/log.svg">
+  </a>
+  <a href="https://crates.io/crates/online">
+    <img alt="Latest version" src="https://img.shields.io/badge/stability-stable-green.svg">
+  </a>
+</p>
+<p align="center">
+  <sub>🤙 Ping me on <a href="https://twitter.com/jesusprubio"><code>Twitter</code></a> if you like this project</sub>
+</p>
 
 ## Use
 
