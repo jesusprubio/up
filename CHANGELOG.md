@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Using Chrome and Firefox captive portal detection servers instead.
 - Minor improvements in the README.
+- Dependencies update.
 
 ## [0.2.0] - 2019-05-21
 
