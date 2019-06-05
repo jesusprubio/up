@@ -21,6 +21,8 @@
   <sub>🤙 Ping me on <a href="https://twitter.com/jesusprubio"><code>Twitter</code></a> if you like this project</sub>
 </p>
 
+It uses TCP to try to connect to Chrome and Firefox (fallback) captive portal detection servers.
+
 ## Use
 
 📝 Please visit [the full documentation](https://docs.rs/online) if you want to learn the details.
