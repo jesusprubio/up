@@ -1,7 +1,7 @@
 [package]
 name = "online"
 version = "0.2.3-alpha.0"
-authors = ["Jesús Rubio <jesusprubio@member.fsf.org>"]
+authors = ["Jesús Rubio <jesusprubio@gmail.com>"]
 edition = "2018"
 documentation = "https://docs.rs/online"
 include = ["src/**/*", "Cargo.toml"]
