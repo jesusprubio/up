@@ -13,8 +13,7 @@ keywords = [
   "connection",
   "up",
   "online",
-  "tcp",
-  "dns"
+  "tcp"
 ]
 categories = ["network-programming"]
 license = "MIT"
@@ -23,14 +22,12 @@ license = "MIT"
 travis-ci = { repository = "jesusprubio/online" }
 
 [package.metadata.commands]
-deps = "cargo install cargo-edit cargo-audit cargo-release cargo-outdated cargo-sync-readme && rustup component add rustfmt clippy"
+deps = "cargo install cargo-audit cargo-sync-readme && rustup component add rustfmt clippy"
 format = "cargo fmt"
 postformat = "cargo clippy"
 readme = "cargo sync-readme"
-pretest = "cargo cmd format && cargo outdated && cargo audit"
+pretest = "cargo cmd format && cargo audit"
 test = "cargo test"
-prepublish = "cargo cmd test"
-publish = "cargo release minor"
 
 [dependencies]
 simple-error = "0.2.1"
