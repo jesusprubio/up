@@ -9,19 +9,18 @@
 </div>
 
 <p align="center">
-  <a href="https://travis-ci.org/jesusprubio/online">
-    <img alt="Build Status" src="https://travis-ci.org/jesusprubio/online.svg?branch=master">
+  <a href="https://github.com/jesusprubio/online/actions">
+    <img alt="Workflow status" src="https://github.com/jesusprubio/online/workflows/CI/badge.svg">
   </a>
   <a href="https://crates.io/crates/online">
     <img alt="Latest version" src="https://img.shields.io/crates/v/online.svg">
   </a>
-  <img alt="Stability stable" src="https://img.shields.io/badge/stability-stable-green.svg">
 </p>
 <p align="center">
   <sub>🤙 Ping me on <a href="https://twitter.com/jesusprubio"><code>Twitter</code></a> if you like this project</sub>
 </p>
 
-It uses TCP to try to connect to Chrome and Firefox (fallback) captive portal detection servers.
+TCP and [async-std](https://github.com/async-rs/async-std) based function which tries to connect to Chrome and Firefox (fallback) captive portal detection servers.
 
 ## Use
 
@@ -31,14 +30,16 @@ It uses TCP to try to connect to Chrome and Firefox (fallback) captive portal de
 
 ```rust
 use std::time::Duration;
-
 use online::*;
 
-assert_eq!(online(None), Ok(true));
+#[async_std::main]
+async fn main() {
+    assert_eq!(online(None).await.unwrap(), true);
 
-// with timeout
-let timeout = Duration::new(6, 0);
-assert_eq!(online(Some(timeout)), Ok(true));
+    // with timeout
+    let timeout = Duration::new(6, 0);
+    assert_eq!(online(Some(timeout)).await.unwrap(), true);
+}
 ```
 
 <!-- cargo-sync-readme end -->

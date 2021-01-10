@@ -23,10 +23,24 @@ async fn probe(addrs: &str, timeout: Option<Duration>) -> Result<TcpStream, Erro
         _ => TcpStream::connect(addrs).await,
     }
 }
+
 /// Check if the internet connection is up. When the check succeeds, the returned future is resolved to `true`.
 ///
 /// * `timeout` - Number of seconds to wait for a response (default: OS dependent)
 pub async fn online(timeout: Option<Duration>) -> Result<bool, Error> {
+    //! ```rust
+    //! use std::time::Duration;
+    //! use online::*;
+    //!
+    //! #[async_std::main]
+    //! async fn main() {
+    //!     assert_eq!(online(None).await.unwrap(), true);
+    //!
+    //!     // with timeout
+    //!     let timeout = Duration::new(6, 0);
+    //!     assert_eq!(online(Some(timeout)).await.unwrap(), true);
+    //! }
+    //! ```
     match probe(ADDRS, timeout).await {
         Ok(_) => Ok(true),
         Err(e) => match probe(ADDRS_BACK, timeout).await {
