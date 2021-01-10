@@ -12,12 +12,7 @@ readme = "README.md"
 keywords = [
   "connection",
   "up",
-  "online",
   "tcp",
-  "async-std",
-  "task",
-  "std",
-  "future",
   "await",
   "async"
 ]
