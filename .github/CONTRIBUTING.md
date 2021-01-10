@@ -1,4 +1,4 @@
-# Contribution Guidelines
+# Contribution guidelines
 
 Thanks! Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
 
@@ -21,8 +21,13 @@ We use [Clippy](https://github.com/rust-lang/rust-clippy) and [rustfmt](https://
 cargo cmd test
 ```
 
-## Commit messages rules:
+## Publish
 
-- It should be formed by a one-line subject, followed by one line of white space. Followed by one or more descriptive paragraphs, each separated by one￼￼￼￼ line of white space. All of them finished by a dot.
-- If it fixes an issue, it should include a reference to the issue ID in the first line of the commit.
-- It should provide enough information for a reviewer to understand the changes and their relation to the rest of the code.
+We use [cargo-release](https://github.com/sunng87/cargo-release) to make the process funnier.
+
+```sh
+cargo install cargo-release
+cargo release
+# cargo release minor
+# cargo release major
+```
