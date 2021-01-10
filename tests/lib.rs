@@ -5,21 +5,27 @@
  * the LICENSE.txt file in the root directory of this source tree.
  */
 
-#[macro_use]
-extern crate pretty_assertions;
-
 #[cfg(test)]
 use online::*;
+use pretty_assertions::assert_eq;
 use std::time::Duration;
 
-#[test]
-fn should_work_no_parameters() {
-    assert_eq!(online(None), Ok(true));
+#[async_std::test]
+async fn should_work_no_parameters() {
+    assert_eq!(online(None).await.unwrap(), true);
 }
 
-#[test]
-fn should_work_timeout() {
-    let timeout = Duration::new(6, 0);
+#[async_std::test]
+async fn should_work_timeout() {
+    let timeout = Duration::from_secs(5);
 
-    assert_eq!(online(Some(timeout)), Ok(true));
+    assert_eq!(online(Some(timeout)).await.unwrap(), true);
+}
+
+#[async_std::test]
+#[should_panic(expected = "future timed out")]
+async fn should_fail_timeout_tiny() {
+    let timeout = Duration::from_nanos(1);
+
+    online(Some(timeout)).await.unwrap();
 }

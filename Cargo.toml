@@ -6,16 +6,27 @@ edition = "2018"
 documentation = "https://docs.rs/online"
 include = ["src/**/*", "Cargo.toml"]
 
-description = "📶 Library to check your Internet connectivity"
+description = "📶 Library to check your Internet connectivity (async-std)"
 repository = "https://github.com/jesusprubio/online.git"
 readme = "README.md"
 keywords = [
   "connection",
   "up",
   "online",
-  "tcp"
+  "tcp",
+  "async-std",
+  "task",
+  "std",
+  "future",
+  "await",
+  "async"
 ]
-categories = ["network-programming"]
+categories = [
+  "network-programming",
+  "development-tools",
+  "asynchronous",
+  "concurrency"
+]
 license = "MIT"
 
 [badges]
@@ -29,8 +40,9 @@ readme = "cargo sync-readme"
 pretest = "cargo cmd format && cargo audit"
 test = "cargo test"
 
-[dependencies]
-simple-error = "0.2.1"
+[dependencies.async-std]
+version = "1.8.0"
+features = ["unstable", "attributes"]
 
 [dev-dependencies]
 pretty_assertions="0.6.1"
