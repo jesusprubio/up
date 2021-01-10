@@ -16,6 +16,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.0] - 2021-01-10
+
+### 🎉 Added
+
+- Async support (`async-std`).
+- IPv6 support.
+
+### 🐛 Fixed
+
+- Problem with `sync-readme`.
+
+### ❌ Removed
+
+- Use of `simple-error`.
+
 ## [0.2.2] - 2019-10-24
 
 ### ✏️ Changed
