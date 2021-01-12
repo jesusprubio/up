@@ -8,7 +8,6 @@
 #[cfg(test)]
 use online::*;
 use pretty_assertions::assert_eq;
-use std::time::Duration;
 
 #[async_std::test]
 async fn should_work_no_parameters() {
@@ -17,15 +16,11 @@ async fn should_work_no_parameters() {
 
 #[async_std::test]
 async fn should_work_timeout() {
-    let timeout = Duration::from_secs(5);
-
-    assert_eq!(online(Some(timeout)).await.unwrap(), true);
+    assert_eq!(online(Some(5)).await.unwrap(), true);
 }
 
 #[async_std::test]
 #[should_panic(expected = "future timed out")]
 async fn should_fail_timeout_tiny() {
-    let timeout = Duration::from_nanos(1);
-
-    online(Some(timeout)).await.unwrap();
+    online(Some(0)).await.unwrap();
 }

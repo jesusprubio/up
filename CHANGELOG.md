@@ -16,12 +16,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.0] - 2021-01-12
+
+### ✏️ Changed
+
+- Simpler API.
+
 ## [1.0.0] - 2021-01-10
 
 ### 🎉 Added
 
-- Async support (`async-std`).
-- IPv6 support.
+- Concurrency (`async-std`).
+- IPv6.
 
 ### 🐛 Fixed
 
@@ -85,7 +91,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release.
 
-[unreleased]: https://github.com/jesusprubio/online/compare/v1.0.0...HEAD
+[unreleased]: https://github.com/jesusprubio/online/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/jesusprubio/online/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/jesusprubio/online/compare/v0.2.2...v1.0.0
 [0.2.2]: https://github.com/jesusprubio/online/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/jesusprubio/online/compare/v0.2.0...v0.2.1

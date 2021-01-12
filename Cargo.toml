@@ -24,16 +24,13 @@ categories = [
 ]
 license = "MIT"
 
-[badges]
-travis-ci = { repository = "jesusprubio/online" }
-
 [package.metadata.commands]
 deps = "cargo install cargo-audit cargo-sync-readme && rustup component add rustfmt clippy"
 format = "cargo fmt"
 postformat = "cargo clippy"
 pretest = "cargo cmd format && cargo audit"
-posttest = "cargo sync-readme"
 test = "cargo test"
+posttest = "cargo sync-readme"
 
 [dependencies.async-std]
 version = "1.8.0"

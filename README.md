@@ -22,6 +22,14 @@
 
 TCP and [async-std](https://github.com/async-rs/async-std) based function which tries to connect to Chrome and Firefox (fallback) captive portal detection servers.
 
+## Install
+
+With [cargo-edit](https://github.com/killercup/cargo-edit) installed run:
+
+```sh
+cargo add online
+```
+
 ## Use
 
 📝 Please visit [the full documentation](https://docs.rs/online) if you want to learn the details.
@@ -29,7 +37,6 @@ TCP and [async-std](https://github.com/async-rs/async-std) based function which 
 <!-- cargo-sync-readme start -->
 
 ```rust
-use std::time::Duration;
 use online::*;
 
 #[async_std::main]
@@ -37,8 +44,7 @@ async fn main() {
     assert_eq!(online(None).await.unwrap(), true);
 
     // with timeout
-    let timeout = Duration::new(6, 0);
-    assert_eq!(online(Some(timeout)).await.unwrap(), true);
+    assert_eq!(online(Some(6)).await.unwrap(), true);
 }
 ```
 
