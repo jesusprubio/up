@@ -16,9 +16,6 @@
     <img alt="Latest version" src="https://img.shields.io/crates/v/online.svg">
   </a>
 </p>
-<p align="center">
-  <sub>🤙 Ping me on <a href="https://twitter.com/jesusprubio"><code>Twitter</code></a> if you like this project</sub>
-</p>
 
 TCP and [async-std](https://github.com/async-rs/async-std) based function which tries to connect to Chrome and Firefox (fallback) captive portal detection servers.
 
