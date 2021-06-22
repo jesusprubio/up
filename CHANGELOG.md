@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Dependencies update.
 
+### ❌ Removed
+
+- Minor documentation cleanup.
+
 ## [2.0.0] - 2021-01-12
 
 ### ✏️ Changed
