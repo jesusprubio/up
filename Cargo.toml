@@ -6,7 +6,7 @@ edition = "2018"
 documentation = "https://docs.rs/online"
 include = ["src/**/*", "Cargo.toml"]
 
-description = "📶 Library to check your Internet connectivity (async-std)"
+description = "📶 Library to check your Internet connectivity"
 repository = "https://github.com/jesusprubio/online.git"
 readme = "README.md"
 keywords = [
@@ -29,12 +29,26 @@ deps = "cargo install cargo-audit cargo-sync-readme && rustup component add rust
 format = "cargo fmt"
 postformat = "cargo clippy"
 pretest = "cargo cmd format && cargo audit"
-test = "cargo test"
+test = "cargo test --features sync"
 posttest = "cargo sync-readme"
 
-[dependencies.async-std]
-version = "1.9.0"
-features = ["unstable", "attributes"]
+[features]
+default = ["async-std-runtime"]
+async-std-runtime = ["async-std"]
+sync = []
+
+[dependencies]
+async-std = { version = "1.9.0", features = ["attributes"], optional = true }
 
 [dev-dependencies]
 pretty_assertions="0.7.2"
+
+[[example]]
+name = "sync"
+path = "examples/sync.rs"
+required-features = ["sync"]
+
+[[test]]
+name = "sync"
+path = "tests/sync.rs"
+required-features = ["sync"]

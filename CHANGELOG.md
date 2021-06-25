@@ -16,8 +16,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [3.0.0] - 2021-06-26
+
+### 🎉 Added
+
+- Synchronous/blocking API.
+- Examples.
+
 ### ✏️ Changed
 
+- Major refactor moving to more rusty code.
 - Dependencies update.
 
 ### ❌ Removed
@@ -99,7 +107,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release.
 
-[unreleased]: https://github.com/jesusprubio/online/compare/v2.0.0...HEAD
+[unreleased]: https://github.com/jesusprubio/online/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/jesusprubio/online/compare/v2.0.0...v3.0.0
 [2.0.0]: https://github.com/jesusprubio/online/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/jesusprubio/online/compare/v0.2.2...v1.0.0
 [0.2.2]: https://github.com/jesusprubio/online/compare/v0.2.1...v0.2.2

@@ -17,32 +17,54 @@
   </a>
 </p>
 
-TCP and [async-std](https://github.com/async-rs/async-std) based function which tries to connect to Chrome and Firefox (fallback) captive portal detection servers.
+
+*Features*
+
+- Both asynchronous and blocking implementations.
+- IPv4 and IPv6 support.
+
+*How it works*
+
+- Tries to connect to Chrome captive portal (using its domain name).
+- If fails, tries the Firefox one.
+- If both fail, the second error is returned to help with diagnostics.
 
 ## Install
 
-With [cargo-edit](https://github.com/killercup/cargo-edit) installed run:
+The library is available on [crates.io](https://crates.io/crates/online). Simply add the next line to your project's `Cargo.toml`.
 
-```sh
-cargo add online
+```toml
+online = "3.0.0"
+```
+
+### Synchronous
+
+The [`async-std`](https://crates.io/crates/async-std) runtime is supported by default. But you can explicitly choose the blocking alternative.
+
+```toml
+[dependencies.online]
+version = "3.0.0"
+default-features = false
+features = ["sync"]
 ```
 
 ## Use
 
-📝 Please visit [the full documentation](https://docs.rs/online) if you want to learn the details.
+📝 Please visit the [examples](examples) and the [full documentation](https://docs.rs/online) if you want to learn the details.
 
 <!-- cargo-sync-readme start -->
 
 ```rust
-use online::*;
+use online::check;
 
 #[async_std::main]
 async fn main() {
-    assert_eq!(online(None).await.unwrap(), true);
-
-    // with timeout
-    assert_eq!(online(Some(6)).await.unwrap(), true);
+    println!("Online? {}", check(None).await.is_ok());
+    println!("Online (timeout)? {}", check(Some(5)).await.is_ok());
+    println!("Online (`Result`)? {:?}", check(None).await.unwrap());
 }
 ```
 
 <!-- cargo-sync-readme end -->
+
+- [Synchronous example](examples/sync.rs)
