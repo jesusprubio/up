@@ -9,10 +9,12 @@
 //! }
 //! ```
 #[cfg(feature = "async-std-runtime")]
+#[path = "./impls/default.rs"]
 mod default;
 
 #[cfg(feature = "async-std-runtime")]
 pub use default::check;
 
 #[cfg(feature = "sync")]
+#[path = "./impls/sync.rs"]
 pub mod sync;

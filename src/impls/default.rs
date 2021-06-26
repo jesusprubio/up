@@ -4,17 +4,17 @@ use async_std::{
 };
 use std::time::Duration;
 
-#[path = "./utils.rs"]
+#[path = "../utils.rs"]
 mod utils;
 
 // Custom version of `TcpStream::connect_timeout` not present in `async-std`.
 // https://docs.rs/async-std/1.9.0/async_std/net/struct.TcpStream.html#method.connect
 async fn connect_timeout(addrs: &str, dur: Duration) -> Result<(), Error> {
     if let Err(e) = tout(dur, TcpStream::connect(addrs)).await {
-        return Err(e);
+        Err(e)
+    } else {
+        Ok(())
     }
-
-    Ok(())
 }
 
 /// Asynchronous implementation.
@@ -26,22 +26,20 @@ pub async fn check(timeout: Option<u64>) -> Result<(), Error> {
         let dur = utils::parse_timeout(t)?;
 
         // First try, ignoring error (if any).
-        if connect_timeout(utils::ADDRS, dur).await.is_ok() {
-            return Ok(());
-        }
-
-        // Fallback.
-        return connect_timeout(utils::ADDRS_BACK, dur).await;
+        return if connect_timeout(utils::ADDRS[0], dur).await.is_ok() {
+            Ok(())
+        } else {
+            // Fallback.
+            connect_timeout(utils::ADDRS[1], dur).await
+        };
     }
 
-    // Second try.
-    if TcpStream::connect(utils::ADDRS).await.is_ok() {
-        return Ok(());
+    // No timeout.
+    if TcpStream::connect(utils::ADDRS[0]).await.is_ok() {
+        Ok(())
+    } else if let Err(e) = TcpStream::connect(utils::ADDRS[1]).await {
+        Err(e)
+    } else {
+        Ok(())
     }
-
-    if let Err(e) = TcpStream::connect(utils::ADDRS_BACK).await {
-        return Err(e);
-    }
-
-    Ok(())
 }
