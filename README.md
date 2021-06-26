@@ -34,7 +34,7 @@
 The library is available on [crates.io](https://crates.io/crates/online). Simply add the next line to your project's `Cargo.toml`.
 
 ```toml
-online = "3.0.0"
+online = "3.0.1"
 ```
 
 ### Synchronous
@@ -42,10 +42,7 @@ online = "3.0.0"
 The [`async-std`](https://crates.io/crates/async-std) runtime is supported by default. But you can explicitly choose the blocking alternative.
 
 ```toml
-[dependencies.online]
-version = "3.0.0"
-default-features = false
-features = ["sync"]
+online = { version = "3.0.1",  default-features = false, features = ["sync"] }
 ```
 
 ## Use
