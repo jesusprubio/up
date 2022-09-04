@@ -2,7 +2,7 @@
 name = "online"
 version = "3.0.2-alpha.0"
 authors = ["Jesús Rubio <jesusprubio@gmail.com>"]
-edition = "2018"
+edition = "2021"
 documentation = "https://docs.rs/online"
 include = ["src/**/*", "Cargo.toml"]
 
