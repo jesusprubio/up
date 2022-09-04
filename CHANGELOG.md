@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### ✏️ Changed
 
 - Dependencies update.
+- Rust 2021 migration.
 
 ## [3.0.1] - 2021-06-26
 
