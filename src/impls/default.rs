@@ -1,8 +1,8 @@
-use async_std::{
-    io::{timeout as tout, Error},
-    net::TcpStream,
-};
-use std::time::Duration;
+#[cfg(all(not(feature = "tokio-runtime"), feature = "async-std-runtime"))]
+use async_std::{io::timeout as tout, net::TcpStream};
+use std::{io::Error, time::Duration};
+#[cfg(all(not(feature = "async-std-runtime"), feature = "tokio-runtime"))]
+use tokio::{net::TcpStream, time::timeout as tout};
 
 #[path = "../utils.rs"]
 mod utils;
@@ -11,6 +11,9 @@ mod utils;
 // https://docs.rs/async-std/1.9.0/async_std/net/struct.TcpStream.html#method.connect
 async fn connect_timeout(addrs: &str, dur: Duration) -> Result<(), Error> {
     if let Err(e) = tout(dur, TcpStream::connect(addrs)).await {
+        #[cfg(all(not(feature = "async-std-runtime"), feature = "tokio-runtime"))]
+        return Err(Error::new(std::io::ErrorKind::TimedOut, "future timed out"));
+        #[cfg(all(not(feature = "tokio-runtime"), feature = "async-std-runtime"))]
         Err(e)
     } else {
         Ok(())

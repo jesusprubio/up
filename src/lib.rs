@@ -8,11 +8,11 @@
 //!     println!("Online (`Result`)? {:?}", check(None).await.unwrap());
 //! }
 //! ```
-#[cfg(feature = "async-std-runtime")]
+#[cfg(any(feature = "async-std-runtime", feature = "tokio-runtime"))]
 #[path = "./impls/default.rs"]
 mod default;
 
-#[cfg(feature = "async-std-runtime")]
+#[cfg(any(feature = "async-std-runtime", feature = "tokio-runtime"))]
 pub use default::check;
 
 #[cfg(feature = "sync")]

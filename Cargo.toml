@@ -35,10 +35,12 @@ posttest = "cargo sync-readme"
 [features]
 default = ["async-std-runtime"]
 async-std-runtime = ["async-std"]
+tokio-runtime = ["tokio"]
 sync = []
 
 [dependencies]
 async-std = { version = "1.12.0", features = ["attributes"], optional = true }
+tokio = { version = "1", default-features = false, features = ["net", "time"], optional = true }
 
 [dev-dependencies]
 pretty_assertions="1.0.3"
