@@ -4,11 +4,13 @@ use std::{
     time::Duration,
 };
 
-#[path = "../utils.rs"]
+#[path = "./utils.rs"]
 mod utils;
 
-// - The signature `connect_timeout` is different to `connect` (no DNS resolution and 1 unique target).
-// - We choose to go with `connect_timeout` (vs `connect` + `io::timeout`) when available due to its better precision.
+// The signature 'connect_timeout' is different to 'connect'
+// (no DNS resolution and 1 unique target).
+// We choose to go with 'connect_timeout' (vs 'connect' + 'io::timeout')
+// when available due to its better precision.
 fn connect_timeout(addr_str: &str, timeout: Duration) -> Result<(), Error> {
     let addrs_iter = addr_str.to_socket_addrs()?;
 
@@ -23,10 +25,10 @@ fn connect_timeout(addr_str: &str, timeout: Duration) -> Result<(), Error> {
     }
 }
 
-// TODO: Update after new additions
 /// Synchronous implementation.
 ///
-/// * `timeout` - Number of seconds to wait for a response (default: OS dependent)
+/// * `timeout` - Number of seconds to wait for a response
+/// (default: OS dependent).
 pub fn check(timeout: Option<u64>) -> Result<(), Error> {
     if let Some(t) = timeout {
         let dur = utils::parse_timeout(t)?;

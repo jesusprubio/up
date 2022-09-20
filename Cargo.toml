@@ -13,7 +13,7 @@ keywords = [
   "connection",
   "up",
   "tcp",
-  "await",
+  "tokio",
   "async"
 ]
 categories = [
@@ -29,28 +29,21 @@ deps = "cargo install cargo-audit cargo-sync-readme && rustup component add rust
 format = "cargo fmt"
 postformat = "cargo clippy"
 pretest = "cargo cmd format && cargo audit"
-test = "cargo test --features sync"
+test = "cargo test --features tokio"
 posttest = "cargo sync-readme"
 
 [features]
-default = ["async-std-runtime"]
-async-std-runtime = ["async-std"]
 tokio-runtime = ["tokio"]
-sync = []
+sync-runtime = []
+default = ["sync-runtime"]
 
 [dependencies]
-async-std = { version = "1.12.0", features = ["attributes"], optional = true }
-tokio = { version = "1", default-features = false, features = ["net", "time"], optional = true }
+tokio = { version = "1", default-features = false, features = ["net", "time", "rt-multi-thread", "macros"], optional = true }
 
 [dev-dependencies]
 pretty_assertions="1.0.3"
 
-[[example]]
-name = "sync"
-path = "examples/sync.rs"
-required-features = ["sync"]
-
 [[test]]
-name = "sync"
-path = "tests/sync.rs"
-required-features = ["sync"]
+name = "tokio"
+path = "tests/tokio.rs"
+required-features = ["tokio-runtime"]

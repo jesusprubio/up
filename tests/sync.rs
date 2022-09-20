@@ -1,5 +1,5 @@
 #[cfg(test)]
-use online::sync::check;
+use online::check;
 use pretty_assertions::assert_eq;
 
 #[test]

@@ -1,20 +1,14 @@
 //! ```rust
 //! use online::check;
 //!
-//! #[async_std::main]
-//! async fn main() {
-//!     println!("Online? {}", check(None).await.is_ok());
-//!     println!("Online (timeout)? {}", check(Some(5)).await.is_ok());
-//!     println!("Online (`Result`)? {:?}", check(None).await.unwrap());
-//! }
+//! println!("Online? {}", check(None).is_ok());
+//! println!("Online (timeout)? {}", check(Some(5)).is_ok());
 //! ```
-#[cfg(any(feature = "async-std-runtime", feature = "tokio-runtime"))]
-#[path = "./impls/default.rs"]
-mod default;
 
-#[cfg(any(feature = "async-std-runtime", feature = "tokio-runtime"))]
-pub use default::check;
+#[cfg(feature = "sync-runtime")]
+mod sync;
+#[cfg(feature = "sync-runtime")]
+pub use sync::check;
 
-#[cfg(feature = "sync")]
-#[path = "./impls/sync.rs"]
-pub mod sync;
+#[cfg(feature = "tokio-runtime")]
+pub mod tokio;

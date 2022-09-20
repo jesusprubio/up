@@ -16,6 +16,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.0.0] - 2022-09-21
+
+### 🎉 Added
+
+- [Tokio runtime](https://tokio.rs/) support (thanks to @abdulrahman1s).
+
+### ✏️ Changed
+
+- Synchronous version is the default now.
+
+### ❌ Removed
+
+- `async-std` runtime support. Details [here](https://github.com/async-rs/async-std/issues/992#issuecomment-1035223559)
+- Examples folder.
+
 ## [3.0.2] - 2022-09-04
 
 ### ✏️ Changed
@@ -120,7 +135,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - First release.
 
-[unreleased]: https://github.com/jesusprubio/online/compare/v3.0.2...HEAD
+[unreleased]: https://github.com/jesusprubio/online/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/jesusprubio/online/compare/v3.0.2...v4.0.0
 [3.0.2]: https://github.com/jesusprubio/online/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/jesusprubio/online/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/jesusprubio/online/compare/v2.0.0...v3.0.0

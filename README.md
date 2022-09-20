@@ -17,13 +17,12 @@
   </a>
 </p>
 
-
-*Features*
+_Features_
 
 - Both asynchronous and blocking implementations.
 - IPv4 and IPv6 support.
 
-*How it works*
+_How it works_
 
 - Tries to connect to Chrome captive portal (using its domain name).
 - If fails, tries the Firefox one.
@@ -31,37 +30,34 @@
 
 ## Install
 
-The library is available on [crates.io](https://crates.io/crates/online). Simply add the next line to your project's `Cargo.toml`.
+The library is available on [crates.io](https://crates.io/crates/online). With [cargo-edit](https://github.com/killercup/cargo-edit) installed run:
 
-```toml
-online = "3.0.1"
+```sh
+cargo add leg
 ```
 
-### Synchronous
-
-The [`async-std`](https://crates.io/crates/async-std) runtime is supported by default. But you can explicitly choose the blocking alternative.
+### Async
 
 ```toml
-online = { version = "3.0.1",  default-features = false, features = ["sync"] }
+online = { version = "4.0.0",  default-features = false, features = ["tokio"] }
 ```
 
 ## Use
 
-📝 Please visit the [examples](examples) and the [full documentation](https://docs.rs/online) if you want to learn the details.
+📝 Please visit the [tests](tests) and [documentation](https://docs.rs/online) to check the details.
 
 <!-- cargo-sync-readme start -->
 
 ```rust
 use online::check;
 
-#[async_std::main]
-async fn main() {
-    println!("Online? {}", check(None).await.is_ok());
-    println!("Online (timeout)? {}", check(Some(5)).await.is_ok());
-    println!("Online (`Result`)? {:?}", check(None).await.unwrap());
-}
+println!("Online? {}", check(None).is_ok());
+println!("Online (timeout)? {}", check(Some(5)).is_ok());
 ```
 
 <!-- cargo-sync-readme end -->
 
-- [Synchronous example](examples/sync.rs)
+### Asynchronous variants
+
+- [Tokio](examples/tokio.rs)
+- [async-std](examples/async_std.rs)
