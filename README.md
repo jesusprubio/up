@@ -56,8 +56,3 @@ println!("Online (timeout)? {}", check(Some(5)).is_ok());
 ```
 
 <!-- cargo-sync-readme end -->
-
-### Asynchronous variants
-
-- [Tokio](examples/tokio.rs)
-- [async-std](examples/async_std.rs)
