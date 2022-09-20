@@ -30,10 +30,11 @@ _How it works_
 
 ## Install
 
-The library is available on [crates.io](https://crates.io/crates/online). With [cargo-edit](https://github.com/killercup/cargo-edit) installed run:
+The library is available on [crates.io](https://crates.io/crates/online). In example,
+through [cargo-edit](https://github.com/killercup/cargo-edit):
 
 ```sh
-cargo add leg
+cargo add online
 ```
 
 ### Async
@@ -44,7 +45,8 @@ online = { version = "4.0.0",  default-features = false, features = ["tokio"] }
 
 ## Use
 
-📝 Please visit the [tests](tests) and [documentation](https://docs.rs/online) to check the details.
+📝 Please visit the [tests](tests) and [documentation](https://docs.rs/online)
+to check the details.
 
 <!-- cargo-sync-readme start -->
 
