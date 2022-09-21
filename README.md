@@ -45,7 +45,7 @@ online = { version = "4.0.0",  default-features = false, features = ["tokio"] }
 
 ## Use
 
-📝 Please visit the [tests](tests) and [documentation](https://docs.rs/online)
+📝 Please visit the [examples](examples) and [documentation](https://docs.rs/online)
 to check the details.
 
 <!-- cargo-sync-readme start -->
