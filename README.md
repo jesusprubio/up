@@ -58,3 +58,8 @@ println!("Online (timeout)? {}", check(Some(5)).is_ok());
 ```
 
 <!-- cargo-sync-readme end -->
+
+```sh
+cargo run --example sync
+cargo run --features="tokio-runtime" --example tokio
+```
