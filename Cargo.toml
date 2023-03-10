@@ -1,6 +1,6 @@
 [package]
 name = "online"
-version = "4.0.0"
+version = "4.0.1"
 authors = ["Jesús Rubio <jesusprubio@gmail.com>"]
 edition = "2021"
 documentation = "https://docs.rs/online"
