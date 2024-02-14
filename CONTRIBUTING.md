@@ -9,16 +9,16 @@ Some development tools are needed to be ready.
 ```sh
 git clone https://github.com/jesusprubio/online
 cd online
-cargo install cargo-cmd
-cargo cmd deps
+cargo install cargo-make
+cargo make dep
 ```
 
 ## Tests
 
-We use [Clippy](https://github.com/rust-lang/rust-clippy) and [rustfmt](https://github.com/rust-lang/rustfmt) linters. Please run to be sure your code fits with them and the tests keep passing:
+We use different linters and formatters. Please run to be sure your code fits with them and the tests keep passing:
 
 ```sh
-cargo cmd test
+cargo make ci
 ```
 
 ## Publish

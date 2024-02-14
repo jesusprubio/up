@@ -5,7 +5,6 @@ authors = ["Jesús Rubio <jesusprubio@gmail.com>"]
 edition = "2021"
 documentation = "https://docs.rs/online"
 include = ["src/**/*", "Cargo.toml"]
-
 description = "📶 Library to check your Internet connectivity"
 repository = "https://github.com/jesusprubio/online.git"
 readme = "README.md"
@@ -17,12 +16,6 @@ categories = [
     "concurrency",
 ]
 license = "MIT"
-
-[package.metadata.commands]
-deps = "cargo install cargo-audit cargo-sync-readme && rustup component add rustfmt clippy"
-pretest = "cargo clippy && cargo audit"
-test = "cargo test --features tokio-runtime"
-posttest = "cargo fmt && cargo sync-readme"
 
 [features]
 tokio-runtime = ["tokio"]

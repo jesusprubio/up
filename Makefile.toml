@@ -1,0 +1,50 @@
+[tasks.ci]
+dependencies = ["dep", "pretest", "test", "posttest"]
+
+[tasks.dep]
+dependencies = ["clean", "deps-cargo", "deps-rustup"]
+
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+
+[tasks.deps-cargo]
+command = "cargo"
+args = ["install", "cargo-audit", "cargo-sync-readme"]
+
+[tasks.deps-rustup]
+command = "rustup"
+args = ["component", "add", "rustfmt", "clippy"]
+
+[tasks.pretest]
+dependencies = ["lint", "audit"]
+
+[tasks.lint]
+command = "cargo"
+args = ["clippy"]
+
+[tasks.audit]
+command = "cargo"
+args = ["audit"]
+
+[task.test]
+dependencies = ["test-sync", "test-tokio"]
+
+[tasks.test-sync]
+command = "cargo"
+args = ["test"]
+
+[tasks.test-tokio]
+command = "cargo"
+args = ["test", "--features", "tokio-runtime"]
+
+[tasks.posttest]
+dependencies = ["format", "sync-readme"]
+
+[tasks.format]
+command = "cargo"
+args = ["fmt"]
+
+[tasks.sync-readme]
+command = "cargo"
+args = ["sync-readme"]

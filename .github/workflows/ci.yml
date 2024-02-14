@@ -24,7 +24,7 @@ jobs:
           rustup default ${{ env.RUST_CHANNEL }}
       - name: Install dependencies
         run: |
-          cargo install cargo-cmd
-          cargo cmd deps
-      - name: Run tests
-        run: cargo cmd test
+          cargo install cargo-make
+          cargo make dep
+      - name: Run CI taks (lint, test ...)
+        run: cargo make ci
