@@ -6,14 +6,21 @@ jobs:
   test:
     name: Test suite
     runs-on: ubuntu-latest
+    env:
+      RUST_CHANNEL: stable
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          profile: minimal
-          toolchain: stable
-          override: true
-      - uses: actions-rs/cargo@v1
-      - run: cargo install cargo-cmd
-      - run: cargo cmd deps
-      - run: cargo cmd test
+            ref: ${{ github.event.pull_request.head.sha }}
+      - name: Install Rust toolchain
+        run: |
+          rustup update --no-self-update ${{ env.RUST_CHANNEL }}
+          rustup component add --toolchain ${{ env.RUST_CHANNEL }} rustfmt
+          rustup default ${{ env.RUST_CHANNEL }}
+      - name: Install dependencies
+        run: |
+          cargo install cargo-cmd
+          cargo cmd deps
+      - name: Run tests
+        run: cargo cmd test
