@@ -9,28 +9,20 @@ include = ["src/**/*", "Cargo.toml"]
 description = "📶 Library to check your Internet connectivity"
 repository = "https://github.com/jesusprubio/online.git"
 readme = "README.md"
-keywords = [
-  "connection",
-  "up",
-  "tcp",
-  "tokio",
-  "async"
-]
+keywords = ["connection", "up", "tcp", "tokio", "async"]
 categories = [
-  "network-programming",
-  "development-tools",
-  "asynchronous",
-  "concurrency"
+    "network-programming",
+    "development-tools",
+    "asynchronous",
+    "concurrency",
 ]
 license = "MIT"
 
 [package.metadata.commands]
 deps = "cargo install cargo-audit cargo-sync-readme && rustup component add rustfmt clippy"
-format = "cargo fmt"
-postformat = "cargo clippy"
-pretest = "cargo cmd format && cargo audit"
+pretest = "cargo clippy && cargo audit"
 test = "cargo test --features tokio-runtime"
-posttest = "cargo sync-readme"
+posttest = "cargo fmt && cargo sync-readme"
 
 [features]
 tokio-runtime = ["tokio"]
@@ -38,10 +30,15 @@ sync-runtime = []
 default = ["sync-runtime"]
 
 [dependencies]
-tokio = { version = "1", default-features = false, features = ["net", "time", "rt-multi-thread", "macros"], optional = true }
+tokio = { version = "1", default-features = false, features = [
+    "net",
+    "time",
+    "rt-multi-thread",
+    "macros",
+], optional = true }
 
 [dev-dependencies]
-pretty_assertions="1.0.3"
+pretty_assertions = "1.4.0"
 
 [[example]]
 name = "tokio"
