@@ -11,7 +11,7 @@ Troubleshoot problems with your Internet connection based om different
 ## Install
 
 ```sh
-go install -v github.com/jesusprubio/up/cmd/up@latest
+go install -v github.com/jesusprubio/up@latest
 ```
 
 ### Dependencies
