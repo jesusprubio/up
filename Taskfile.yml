@@ -6,7 +6,7 @@ tasks:
 
   dev:
     summary: "Development mode"
-    cmd: go run cmd/main.go
+    cmd: go run cmd/up/main.go
 
   build:
     summary: "Build application"
