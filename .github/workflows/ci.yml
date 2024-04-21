@@ -1,0 +1,30 @@
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+
+name: CI
+
+env:
+  TASK_X_REMOTE_TASKFILES: 1
+
+jobs:
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22.2"
+      - name: Install Task
+        uses: arduino/setup-task@v2
+      - name: Install dependencies
+        run: task dep
+      - name: Run linters
+        run: task lint
+      - name: Run tests
+        run: task test

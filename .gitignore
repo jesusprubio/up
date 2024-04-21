@@ -1,0 +1,24 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+# Mac OS X Finder files.
+.DS_Store
+# Test binary, built with `go test -c`
+*.test
+# Go coverage tool
+*.out
+# Dependencies
+vendor/
+# Go workspace file
+go.work
+# Vendoring
+vendor/
+# Goreleaser
+dist/
+# Taskfile (remote)
+.task/
+# VS Code
+.vscode/

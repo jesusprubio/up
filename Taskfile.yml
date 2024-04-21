@@ -1,0 +1,42 @@
+version: "3"
+
+tasks:
+  default:
+    deps: [dev]
+
+  dev:
+    summary: "Development mode"
+    cmd: go run cmd/main.go
+
+  build:
+    summary: "Build application"
+    cmd: go build -o dist/up cmd/main.go
+
+  clean:
+    summary: "Clean the project"
+    cmd: go clean
+
+  dep:
+    summary: "Install dev dependencies"
+    cmds:
+      # Linters.
+      - go install honnef.co/go/tools/cmd/staticcheck@latest
+      - go install github.com/securego/gosec/v2/cmd/gosec@latest
+      # Formatters.
+      - go install github.com/segmentio/golines@latest
+
+  fmt:
+    summary: "Format the code"
+    # Runs `go fmt` before finishing.
+    cmd: golines -m 80 --shorten-comments -w .
+
+  lint:
+    summary: "Run linters"
+    cmds:
+      - go vet ./...
+      - staticcheck ./...
+      - gosec -fmt=golint -quiet ./...
+
+  test:
+    summary: "Run tests"
+    cmd: go test -v ./...
