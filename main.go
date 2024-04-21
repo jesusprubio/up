@@ -33,8 +33,6 @@ const (
 	`
 )
 
-// TODO: Support passing a custom remote server as an argument.
-
 // CLI initialization.
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())

@@ -19,7 +19,6 @@ type Probe struct {
 	// Delay between requests.
 	Delay time.Duration
 	// Time to wait for a response.
-	// TODO: Support specific timeouts per protocol.
 	Timeout time.Duration
 	// For debugging purposes.
 	Logger *slog.Logger
