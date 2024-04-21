@@ -44,7 +44,6 @@ func (p *Protocol) String() string {
 // The extra information is the status code.
 func requestHTTP(u string, timeout time.Duration) (string, error) {
 	cli := &http.Client{Timeout: timeout}
-	// TODO: Reuse client
 	resp, err := cli.Get(u)
 	if err != nil {
 		return "", fmt.Errorf("making request to %s: %w", u, err)
@@ -74,7 +73,7 @@ func requestTCP(hostPort string, timeout time.Duration) (string, error) {
 // Resolves a domain name.
 //
 // The extra information is the first resolved IP address.
-// TODO: Support custom DNS resolver.
+// TODO(#31)
 func requestDNS(domain string, timeout time.Duration) (string, error) {
 	addrs, err := net.LookupHost(domain)
 	if err != nil {
