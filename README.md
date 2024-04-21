@@ -10,8 +10,8 @@ Troubleshoot problems with your Internet connection based om different
 
 ## Install
 
-```sg
-go install github.com/jesusprubio/up@latest
+```sh
+go install -v github.com/jesusprubio/up/cmd/up@latest
 ```
 
 ### Dependencies
