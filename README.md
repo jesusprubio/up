@@ -3,7 +3,7 @@
   <img alt="Logo" src="https://media.giphy.com/media/pYyFAHLW0zJL2/giphy.gif" width="40%">
 </div>
 
-Troubleshoot problems with your Internet connection based om different
+Troubleshoot problems with your Internet connection based on different
 [protocols](pkg/protocol.go) and [public servers](pkg/servers.go).
 
 [![GoDoc][doc-img]][doc] [![Build Status][ci-img]][ci] ![License](https://img.shields.io/github/license/jesusprubio/up)

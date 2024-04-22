@@ -75,7 +75,10 @@ func (p Probe) Run(ctx context.Context) error {
 					return nil
 				default:
 					start := time.Now()
-					rhost := proto.RHost()
+					rhost, err := proto.RHost()
+					if err != nil {
+						return fmt.Errorf("creating remote host: %w", err)
+					}
 					p.Logger.Debug(
 						"New protocol",
 						"count", count, "protocol", proto.ID, "rhost", rhost,

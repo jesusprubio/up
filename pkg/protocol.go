@@ -10,7 +10,7 @@ import (
 // Protocols included in the library.
 var Protocols = []*Protocol{
 	{ID: "http", Request: requestHTTP, RHost: RandomCaptivePortal},
-	{ID: "tcp", Request: requestTCP, RHost: RandomServerTCP},
+	{ID: "tcp", Request: requestTCP, RHost: RandomTCPServer},
 	{ID: "dns", Request: requestDNS, RHost: RandomDomain},
 }
 
@@ -31,7 +31,7 @@ type Protocol struct {
 	// Returns extra information about the attempt or an error if it failed.
 	Request func(rhost string, timeout time.Duration) (string, error)
 	// Function to create a random remote
-	RHost func() string
+	RHost func() (string, error)
 }
 
 // String returns an human-readable representation of the protocol.

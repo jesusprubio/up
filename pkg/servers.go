@@ -1,15 +1,26 @@
 package pkg
 
 import (
-	"math/rand"
+	"crypto/rand"
+	"fmt"
+	"math/big"
 	"net"
 	"net/url"
 )
 
+const tmplRandom = "creating random number: %w"
+
 // RandomCaptivePortal returns a captive portal URL selected randomly from the
 // list of well-known companies.
-func RandomCaptivePortal() string {
-	return CaptivePortals[rand.Intn(len(CaptivePortals))].String()
+//
+// Returns an error if the random number generator fails.
+func RandomCaptivePortal() (string, error) {
+	count := big.NewInt(int64(len(CaptivePortals)))
+	index, err := rand.Int(rand.Reader, count)
+	if err != nil {
+		return "", fmt.Errorf(tmplRandom, err)
+	}
+	return CaptivePortals[index.Int64()].String(), nil
 }
 
 // CaptivePortals are URLs that well-known companies use inspect the network
@@ -57,9 +68,16 @@ var CaptivePortals []*url.URL = []*url.URL{
 	},
 }
 
-// RandomServerDNS returns a randomly selected public DNS server address.
-func RandomServerDNS() string {
-	return Resolvers[rand.Intn(len(Resolvers))].String()
+// RandomDNSServer returns a randomly selected public DNS server address.
+//
+// Returns an error if the random number generator fails.
+func RandomDNSServer() (string, error) {
+	count := big.NewInt(int64(len(Resolvers)))
+	index, err := rand.Int(rand.Reader, count)
+	if err != nil {
+		return "", fmt.Errorf(tmplRandom, err)
+	}
+	return Resolvers[index.Int64()].String(), nil
 }
 
 // Resolvers is a list of public DNS server IP addresses.
@@ -102,15 +120,29 @@ var Resolvers = []*net.IP{
 	{199, 85, 127, 10},
 }
 
-// RandomServerTCP returns a TCP host:port selected randomly from the public DNS
+// RandomTCPServer returns a TCP host:port selected randomly from the public DNS
 // servers.
-func RandomServerTCP() string {
-	return net.JoinHostPort(RandomServerDNS(), "53")
+//
+// Returns an error if the random number generator fails.
+func RandomTCPServer() (string, error) {
+	serverAddr, err := RandomDNSServer()
+	if err != nil {
+		return "", fmt.Errorf(tmplRandom, err)
+	}
+	return net.JoinHostPort(serverAddr, "53"), nil
 }
 
 // RandomDomain returns a domain selected randomly from the captive portals.
-func RandomDomain() string {
-	// Error ignored because the URLs are hardcoded.
-	u, _ := url.Parse(RandomCaptivePortal())
-	return u.Hostname()
+//
+// Returns an error if the random number generator fails.
+func RandomDomain() (string, error) {
+	portalURL, err := RandomCaptivePortal()
+	if err != nil {
+		return "", fmt.Errorf(tmplRandom, err)
+	}
+	u, err := url.Parse(portalURL)
+	if err != nil {
+		return "", fmt.Errorf("parsing URL %s: %w", portalURL, err)
+	}
+	return u.Hostname(), nil
 }
