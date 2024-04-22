@@ -16,13 +16,13 @@ type Probe struct {
 	Protocols []*Protocol
 	// Number of iterations. Zero means infinite.
 	Count uint
-	// Delay between requests.
-	Delay time.Duration
 	// Time to wait for a response.
 	Timeout time.Duration
+	// Delay between requests.
+	Delay time.Duration
 	// For debugging purposes.
 	Logger *slog.Logger
-	// Optional channel to send back partial results.
+	// Channel to send back partial results.
 	ReportCh chan *Report
 }
 
@@ -34,6 +34,7 @@ func (p Probe) validate() error {
 	if p.Timeout == 0 {
 		return fmt.Errorf(tmplRequiredProp, "Timeout")
 	}
+	// 'Delay' could be zero.
 	if p.Logger == nil {
 		return fmt.Errorf(tmplRequiredProp, "Logger")
 	}
@@ -43,17 +44,17 @@ func (p Probe) validate() error {
 	return nil
 }
 
-// Run the connection attempts to the public servers.
+// Run the connection requests against the public servers.
 //
 // The context can be cancelled between different protocol attempts or count
 // iterations.
 // Returns an error if the setup is invalid.
 func (p Probe) Run(ctx context.Context) error {
-	p.Logger.Debug("Starting", "setup", p)
 	err := p.validate()
 	if err != nil {
 		return fmt.Errorf("invalid setup: %w", err)
 	}
+	p.Logger.Debug("Starting", "setup", p)
 	count := uint(0)
 	for {
 		select {
@@ -99,11 +100,11 @@ func (p Probe) Run(ctx context.Context) error {
 					time.Sleep(p.Delay)
 				}
 			}
-			count++
 			p.Logger.Debug(
 				"End of iteration",
 				"count", count, "p.Count", p.Count,
 			)
+			count++
 			if count == p.Count {
 				p.Logger.Debug("Count limit reached", "count", count)
 				return nil

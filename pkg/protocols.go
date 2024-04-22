@@ -9,9 +9,9 @@ import (
 
 // Protocols included in the library.
 var Protocols = []*Protocol{
-	{ID: "http", Request: requestHTTP, RHost: RandomCaptivePortal},
 	{ID: "tcp", Request: requestTCP, RHost: RandomTCPServer},
 	{ID: "dns", Request: requestDNS, RHost: RandomDomain},
+	{ID: "http", Request: requestHTTP, RHost: RandomCaptivePortal},
 }
 
 // ProtocolByID returns a protocol from the list.

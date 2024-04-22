@@ -1,4 +1,5 @@
-<h1 align="center">up</h1>
+# up
+
 <div align="center">
   <img alt="Logo" src="https://media.giphy.com/media/pYyFAHLW0zJL2/giphy.gif" width="40%">
 </div>
@@ -39,7 +40,7 @@ Check [the examples](examples) to see how to use this project in your own code.
 
 ## License
 
-This project is under the MIT License. See the [LICENSE](LICENSE) file for the full license text.
+This project is under the MIT License. See the [LICENSE](LICENSE) file for the full text.
 
 [doc-img]: https://pkg.go.dev/badge/github.com/jesusprubio/up
 [doc]: https://pkg.go.dev/github.com/jesusprubio/up
