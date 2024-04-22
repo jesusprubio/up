@@ -1,13 +1,10 @@
-on:
-  push:
-    branches:
-    - main
-  pull_request:
-
 name: CI
 
-env:
-  TASK_X_REMOTE_TASKFILES: 1
+on:
+  push:
+    branches: main
+    tags: v*
+  pull_request:
 
 jobs:
   test:
