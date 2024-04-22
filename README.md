@@ -5,7 +5,7 @@
 </div>
 
 Troubleshoot problems with your Internet connection based on different
-[protocols](pkg/protocol.go) and [public servers](pkg/servers.go).
+[protocols](pkg/protocol.go) and well-known [public servers](pkg/servers.go).
 
 [![GoDoc][doc-img]][doc] [![Build Status][ci-img]][ci] ![License](https://img.shields.io/github/license/jesusprubio/up)
 
