@@ -10,7 +10,7 @@ tasks:
 
   build:
     summary: "Build application"
-    cmd: go build -o dist/up cmd/main.go
+    cmd: go build -o dist/up .
 
   clean:
     summary: "Clean the project"
