@@ -30,7 +30,7 @@ tasks:
     # Runs `go fmt` before finishing.
     cmd: golines -m 80 --shorten-comments -w .
 
-  lint:
+  vet:
     summary: "Run linters"
     cmds:
       - go vet ./...
