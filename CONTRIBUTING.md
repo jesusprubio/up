@@ -14,12 +14,12 @@ task dep
 task
 ```
 
-## Tests, linters and format
+## Test
 
 ```sh
-task lint
+task vet # linters
 task test
-task fmt
+task fmt # formatters
 ```
 
 ## Build
