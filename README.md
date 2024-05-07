@@ -3,11 +3,11 @@
 Troubleshoot problems with your Internet connection based on different
 [protocols](pkg/protocol.go) and well-known [public servers](pkg/servers.go).
 
+[![GoDoc][doc-img]][doc] [![Build Status][ci-img]][ci] ![License](https://img.shields.io/github/license/jesusprubio/up)
+
 <div align="center">
   <img alt="Logo" src="https://github.com/jesusprubio/up/assets/2753855/a9c6bdb5-ab53-4969-8b36-97896c09a090" width="70%">
 </div>
-
-[![GoDoc][doc-img]][doc] [![Build Status][ci-img]][ci] ![License](https://img.shields.io/github/license/jesusprubio/up)
 
 ## Install
 
