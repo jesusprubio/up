@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const tmplRequiredProp = "required property: '%s'"
+const tmplRequiredProp = "required property: %s"
 
 // Probe is an experiment to measure the connectivity of a network using
 // different protocols and public servers.
@@ -28,8 +28,14 @@ type Probe struct {
 
 // Ensures the probe setup is correct.
 func (p Probe) validate() error {
-	if p.Protocols == nil || len(p.Protocols) == 0 {
+	if p.Protocols == nil {
 		return fmt.Errorf(tmplRequiredProp, "Protocols")
+	}
+	for _, proto := range p.Protocols {
+		err := proto.validate()
+		if err != nil {
+			return fmt.Errorf("invalid protocol: %w", err)
+		}
 	}
 	if p.Timeout == 0 {
 		return fmt.Errorf(tmplRequiredProp, "Timeout")
@@ -84,7 +90,7 @@ func (p Probe) Run(ctx context.Context) error {
 						"New protocol",
 						"count", count, "protocol", proto.ID, "rhost", rhost,
 					)
-					extra, err := proto.Request(rhost, p.Timeout)
+					extra, err := proto.Probe(rhost, p.Timeout)
 					report := Report{
 						ProtocolID: proto.ID,
 						RHost:      rhost,
@@ -101,8 +107,7 @@ func (p Probe) Run(ctx context.Context) error {
 				}
 			}
 			p.Logger.Debug(
-				"End of iteration",
-				"count", count, "p.Count", p.Count,
+				"Iteration finished", "count", count, "p.Count", p.Count,
 			)
 			count++
 			if count == p.Count {

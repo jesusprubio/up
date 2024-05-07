@@ -12,12 +12,14 @@ import (
 
 func main() {
 	logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
+	reportCh := make(chan *pkg.Report)
+	defer close(reportCh)
 	probe := pkg.Probe{
 		Protocols: []*pkg.Protocol{pkg.Protocols[1]},
 		Count:     3,
 		Timeout:   2 * time.Second,
 		Logger:    logger,
-		ReportCh:  make(chan *pkg.Report),
+		ReportCh:  reportCh,
 	}
 	go func() {
 		for report := range probe.ReportCh {
