@@ -1,12 +1,11 @@
 # up
 
-<div align="center">
-  <img alt="Logo" src="https://media.giphy.com/media/pYyFAHLW0zJL2/giphy.gif" width="40%">
-</div>
-
 Troubleshoot problems with your Internet connection based on different
 [protocols](pkg/protocol.go) and well-known [public servers](pkg/servers.go).
 
+<div align="center">
+  <img alt="Logo" src="https://github.com/jesusprubio/up/assets/2753855/a9c6bdb5-ab53-4969-8b36-97896c09a090" width="50%">
+</div>
 [![GoDoc][doc-img]][doc] [![Build Status][ci-img]][ci] ![License](https://img.shields.io/github/license/jesusprubio/up)
 
 ## Install
