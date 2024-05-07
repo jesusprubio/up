@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"os"
 	"testing"
 	"time"
 )
@@ -160,6 +161,9 @@ func TestDnsProbe(t *testing.T) {
 		}
 		got = err.Error()
 		want := "resolving invalid.aa: lookup invalid.aa: no such host"
+		if os.Getenv("CI") == "true" {
+			want = "resolving invalid.aa: lookup invalid.aa on 127.0.0.53:53: no such host"
+		}
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
 		}
