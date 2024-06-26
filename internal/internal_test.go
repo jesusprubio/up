@@ -32,7 +32,7 @@ func TestReportToLine(t *testing.T) {
 	}
 	t.Run("return success line if no error happened", func(t *testing.T) {
 		got := ReportToLine(r)
-		want := "✔ test\t1s\ttest (test)"
+		want := "✔ test            1s             test (test)"
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
 		}
@@ -40,7 +40,7 @@ func TestReportToLine(t *testing.T) {
 	t.Run("return error line if an error happened", func(t *testing.T) {
 		r.Error = errors.New("probe error")
 		got := ReportToLine(r)
-		want := "✘ test\t1s\ttest (probe error)"
+		want := "✘ test            1s             test (probe error)"
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
 		}

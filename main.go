@@ -33,7 +33,7 @@ func main() {
 		// TODO(#37): Debug and verbose should not be the same thing.
 		lvl.Set(slog.LevelDebug)
 	}
-	logger.Debug("Starting", "options", opts)
+	logger.Debug("Starting ...", "options", opts)
 	protocols := pkg.Protocols
 	if opts.Protocol != "" {
 		protocol := internal.ProtocolByID(opts.Protocol)
@@ -42,7 +42,7 @@ func main() {
 		}
 		protocols = []*pkg.Protocol{protocol}
 	}
-	logger.Info("Running", "protocols", protocols, "count", opts.Count)
+	logger.Info("Starting ...", "protocols", protocols, "count", opts.Count)
 	if opts.Help {
 		fmt.Fprintf(os.Stderr, "%s\n", internal.AppDesc)
 		flag.Usage()
@@ -74,7 +74,7 @@ func main() {
 		ReportCh:  reportCh,
 	}
 	go func() {
-		logger.Debug("Listening for reports")
+		logger.Debug("Listening for reports ...")
 		for report := range probe.ReportCh {
 			logger.Debug("New report", "report", *report)
 			var line string
@@ -96,7 +96,7 @@ func main() {
 			}
 		}
 	}()
-	logger.Debug("Running", "setup", probe)
+	logger.Debug("Running ...", "setup", probe)
 	err := probe.Run(ctx)
 	if err != nil {
 		internal.Fatal(fmt.Errorf("running probe: %w", err))
