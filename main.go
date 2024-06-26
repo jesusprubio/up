@@ -29,8 +29,7 @@ func main() {
 	}))
 	var opts internal.Options
 	opts.Parse()
-	if opts.Verbose {
-		// TODO(#37): Debug and verbose should not be the same thing.
+	if opts.Debug {
 		lvl.Set(slog.LevelDebug)
 	}
 	logger.Debug("Starting ...", "options", opts)
@@ -101,5 +100,4 @@ func main() {
 	if err != nil {
 		internal.Fatal(fmt.Errorf("running probe: %w", err))
 	}
-	logger.Debug("Bye!")
 }

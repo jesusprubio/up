@@ -27,7 +27,7 @@ tasks:
 
   fmt:
     summary: "Format the code"
-    # Runs `go fmt` before finishing.
+    # Already runs `go fmt` before finishing.
     cmd: golines -m 80 --shorten-comments -w .
 
   vet:
