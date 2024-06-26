@@ -45,8 +45,7 @@ func Fatal(err error) {
 
 // ReportToLine returns a human-readable representation of the report.
 func ReportToLine(r *pkg.Report) string {
-	// TODO(#40): Use Go string padding.
-	line := fmt.Sprintf("%s\t%s\t%s", bold(r.ProtocolID), r.Time, r.RHost)
+	line := fmt.Sprintf("%-15s %-14s %s", bold(r.ProtocolID), r.Time, r.RHost)
 	suffix := r.Extra
 	prefix := green("✔")
 	if r.Error != nil {
