@@ -23,8 +23,8 @@ type Options struct {
 	JSONOutput bool
 	// Disable color output.
 	NoColor bool
-	// Verbose output.
-	Verbose bool
+	// Enable debugging.
+	Debug bool
 	// Show app documentation.
 	Help bool
 }
@@ -44,7 +44,7 @@ func (opts *Options) Parse() {
 	)
 	flag.BoolVar(&opts.JSONOutput, "j", false, "Output in JSON format")
 	flag.BoolVar(&opts.NoColor, "nc", false, "Disable color output")
-	flag.BoolVar(&opts.Verbose, "v", false, "Verbose output")
+	flag.BoolVar(&opts.Debug, "dbg", false, "Verbose output")
 	flag.BoolVar(&opts.Help, "h", false, "Show app documentation")
 	flag.Parse()
 }
