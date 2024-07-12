@@ -29,7 +29,7 @@ func TestHttpProbe(t *testing.T) {
 		"returns the status code if the request is successful",
 		func(t *testing.T) {
 			u := url.URL{Scheme: "http", Host: server.Addr}
-			got, err := httpProbe(u.String(), tout)
+			got, err := httpProbe(nil, u.String(), tout)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -41,7 +41,7 @@ func TestHttpProbe(t *testing.T) {
 	)
 	t.Run("returns an error if the request fails", func(t *testing.T) {
 		u := url.URL{Scheme: "http", Host: "localhost"}
-		got, err := httpProbe(u.String(), 1)
+		got, err := httpProbe(nil, u.String(), 1)
 		if err == nil {
 			t.Fatal("got nil, want an error")
 		}
@@ -91,7 +91,7 @@ func TestTcpProbe(t *testing.T) {
 	t.Run(
 		"returns the local host/port if the request is successful",
 		func(t *testing.T) {
-			got, err := tcpProbe(hostPort, tout)
+			got, err := tcpProbe(nil, hostPort, tout)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -109,7 +109,7 @@ func TestTcpProbe(t *testing.T) {
 		},
 	)
 	t.Run("returns an error if the request fails", func(t *testing.T) {
-		got, err := tcpProbe("localhost:80", 1)
+		got, err := tcpProbe(nil, "localhost:80", 1)
 		if err == nil {
 			t.Fatal("got nil, want an error")
 		}
@@ -141,7 +141,7 @@ func TestDnsProbe(t *testing.T) {
 	t.Run(
 		"returns the first resolved IP address if the request is successful",
 		func(t *testing.T) {
-			got, err := dnsProbe("google.com", tout)
+			got, err := dnsProbe(nil, "google.com", tout)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -152,7 +152,7 @@ func TestDnsProbe(t *testing.T) {
 		},
 	)
 	t.Run("returns an error if the request fails", func(t *testing.T) {
-		got, err := dnsProbe("invalid.aa", 1)
+		got, err := dnsProbe(nil, "invalid.aa", 1)
 		if err == nil {
 			t.Fatal("got nil, want an error")
 		}

@@ -90,7 +90,7 @@ func (p Probe) Run(ctx context.Context) error {
 						"New protocol",
 						"count", count, "protocol", proto.ID, "rhost", rhost,
 					)
-					extra, err := proto.Probe(rhost, p.Timeout)
+					extra, err := proto.Probe(proto, rhost, p.Timeout)
 					report := Report{
 						ProtocolID: proto.ID,
 						RHost:      rhost,

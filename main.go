@@ -36,6 +36,9 @@ func main() {
 	protocols := pkg.Protocols
 	if opts.Protocol != "" {
 		protocol := internal.ProtocolByID(opts.Protocol)
+		if opts.DNSResolver != "" {
+			protocol.WithDNSResolver(opts.DNSResolver)
+		}
 		if protocol == nil {
 			internal.Fatal(fmt.Errorf("unknown protocol: %s", opts.Protocol))
 		}
