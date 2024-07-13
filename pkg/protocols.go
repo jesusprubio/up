@@ -10,9 +10,33 @@ import (
 
 // Protocols included in the library.
 var Protocols = []*Protocol{
-	{ID: "http", Probe: httpProbe, RHost: RandomCaptivePortal},
-	{ID: "tcp", Probe: tcpProbe, RHost: RandomTCPServer},
-	{ID: "dns", Probe: dnsProbe, RHost: RandomDomain},
+	{
+		ID: "http",
+		Probe: func(p *Protocol) func(rhost string, timeout time.Duration) (string, error) {
+			return func(rhost string, timeout time.Duration) (string, error) {
+				return p.httpProbe(rhost, timeout)
+			}
+		}(&Protocol{ID: "http", RHost: RandomCaptivePortal}),
+		RHost: RandomCaptivePortal,
+	},
+	{
+		ID: "tcp",
+		Probe: func(p *Protocol) func(rhost string, timeout time.Duration) (string, error) {
+			return func(rhost string, timeout time.Duration) (string, error) {
+				return p.tcpProbe(rhost, timeout)
+			}
+		}(&Protocol{ID: "tcp", RHost: RandomTCPServer}),
+		RHost: RandomTCPServer,
+	},
+	{
+		ID: "dns",
+		Probe: func(p *Protocol) func(rhost string, timeout time.Duration) (string, error) {
+			return func(rhost string, timeout time.Duration) (string, error) {
+				return p.dnsProbe(rhost, timeout)
+			}
+		}(&Protocol{ID: "dns", RHost: RandomDomain}),
+		RHost: RandomDomain,
+	},
 }
 
 // Protocol defines a probe attempt.
@@ -20,7 +44,7 @@ type Protocol struct {
 	ID string
 	// Probe implementation for this protocol.
 	// Returns extra information about the attempt or an error if it failed.
-	Probe func(p *Protocol, rhost string, timeout time.Duration) (string, error)
+	Probe func(rhost string, timeout time.Duration) (string, error)
 	// Function to create a random remote
 	RHost func() (string, error)
 	// customDNSResolver
@@ -50,7 +74,7 @@ func (p *Protocol) validate() error {
 // Makes an HTTP request.
 //
 // The extra information is the status code.
-func httpProbe(p *Protocol, u string, timeout time.Duration) (string, error) {
+func (p *Protocol) httpProbe(u string, timeout time.Duration) (string, error) {
 	cli := &http.Client{Timeout: timeout}
 	resp, err := cli.Get(u)
 	if err != nil {
@@ -66,7 +90,7 @@ func httpProbe(p *Protocol, u string, timeout time.Duration) (string, error) {
 // Makes a TCP request.
 //
 // The extra information is the local host/port.
-func tcpProbe(p *Protocol, hostPort string, timeout time.Duration) (string, error) {
+func (p *Protocol) tcpProbe(hostPort string, timeout time.Duration) (string, error) {
 	conn, err := net.DialTimeout("tcp", hostPort, timeout)
 	if err != nil {
 		return "", fmt.Errorf("making request to %s: %w", hostPort, err)
@@ -82,7 +106,7 @@ func tcpProbe(p *Protocol, hostPort string, timeout time.Duration) (string, erro
 //
 // The extra information is the first resolved IP address.
 // TODO(#31)
-func dnsProbe(p *Protocol, domain string, timeout time.Duration) (string, error) {
+func (p *Protocol) dnsProbe(domain string, timeout time.Duration) (string, error) {
 	if p != nil && p.dnsResolver != "" {
 		r := &net.Resolver{
 			PreferGo: true,

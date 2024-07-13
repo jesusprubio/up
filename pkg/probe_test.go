@@ -10,7 +10,7 @@ import (
 func TestProtocolValidate(t *testing.T) {
 	proto := &Protocol{
 		ID:    "test-proto",
-		Probe: func(p *Protocol, rhost string, timeout time.Duration) (string, error) { return "", nil },
+		Probe: func(rhost string, timeout time.Duration) (string, error) { return "", nil },
 		RHost: func() (string, error) { return "", nil },
 	}
 	t.Run("returns nil with valid setup", func(t *testing.T) {
@@ -40,7 +40,7 @@ func TestProtocolValidate(t *testing.T) {
 func TestProbeValidate(t *testing.T) {
 	protocols := []*Protocol{{
 		ID: "test-proto",
-		Probe: func(p *Protocol, rhost string, timeout time.Duration) (string, error) {
+		Probe: func(rhost string, timeout time.Duration) (string, error) {
 			return "", nil
 		},
 		RHost: func() (string, error) {
@@ -123,7 +123,7 @@ func TestProbeRun(t *testing.T) {
 	localHostPort := "127.0.0.1:3355"
 	proto := &Protocol{
 		ID: "test-proto",
-		Probe: func(p *Protocol, rhost string, timeout time.Duration) (string, error) {
+		Probe: func(rhost string, timeout time.Duration) (string, error) {
 			return localHostPort, nil
 		},
 		RHost: func() (string, error) { return hostPort, nil },
