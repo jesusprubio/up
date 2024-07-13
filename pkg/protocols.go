@@ -9,10 +9,34 @@ import (
 )
 
 // Protocols included in the library.
-var Protocols = []*Protocol{
-	{ID: "http", Probe: (&Protocol{}).httpProbe, RHost: RandomCaptivePortal},
-	{ID: "tcp", Probe: (&Protocol{}).tcpProbe, RHost: RandomTCPServer},
-	{ID: "dns", Probe: (&Protocol{}).dnsProbe, RHost: RandomDomain},
+var Protocols []*Protocol
+
+func init() {
+	httpProtocol := &Protocol{
+		ID:    "http",
+		RHost: RandomCaptivePortal,
+	}
+	httpProtocol.Probe = func(domain string, timeout time.Duration) (string, error) {
+		return httpProtocol.httpProbe(domain, timeout)
+	}
+
+	tcpProtocol := &Protocol{
+		ID:    "tcp",
+		RHost: RandomTCPServer,
+	}
+	tcpProtocol.Probe = func(domain string, timeout time.Duration) (string, error) {
+		return tcpProtocol.tcpProbe(domain, timeout)
+	}
+
+	dnsProtocol := &Protocol{
+		ID:    "dns",
+		RHost: RandomDomain,
+	}
+	dnsProtocol.Probe = func(domain string, timeout time.Duration) (string, error) {
+		return dnsProtocol.dnsProbe(domain, timeout)
+	}
+
+	Protocols = []*Protocol{httpProtocol, tcpProtocol, dnsProtocol}
 }
 
 // Protocol defines a probe attempt.
