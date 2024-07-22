@@ -25,6 +25,10 @@ func TestHttpProbe(t *testing.T) {
 	tout := 1 * time.Second
 	server := newTestHTTPServer(t)
 	defer server.Close()
+	
+	// short delay to allow the server to start
+	time.Sleep(100 * time.Millisecond)
+
 	t.Run(
 		"returns the status code if the request is successful",
 		func(t *testing.T) {
