@@ -25,10 +25,6 @@ func TestHttpProbe(t *testing.T) {
 	tout := 1 * time.Second
 	server := newTestHTTPServer(t)
 	defer server.Close()
-	
-	// short delay to allow the server to start
-	time.Sleep(100 * time.Millisecond)
-
 	t.Run(
 		"returns the status code if the request is successful",
 		func(t *testing.T) {
@@ -63,18 +59,29 @@ func TestHttpProbe(t *testing.T) {
 // Creates an HTTP server for testing.
 func newTestHTTPServer(t *testing.T) *http.Server {
 	hostPort := net.JoinHostPort("127.0.0.1", "8080")
-	server := &http.Server{Addr: hostPort}
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	mux := http.NewServeMux()
+	server := &http.Server{
+		Addr: hostPort,
+		Handler:mux,
+	}
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "pong\n")
 	})
+
+	l, err := net.Listen("tcp", hostPort)
+	if err != nil {
+		t.Fatalf("create listener %v", err)
+	}
+
 	go func() {
-		err := server.ListenAndServe()
-		if err != nil && err != http.ErrServerClosed {
+		if err := server.Serve(l); err != nil && err != http.ErrServerClosed {
 			t.Errorf("starting http server: %v", err)
 		}
 	}()
 	return server
 }
+
 
 func TestTcpProbe(t *testing.T) {
 	tout := 1 * time.Second
