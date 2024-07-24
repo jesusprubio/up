@@ -63,8 +63,12 @@ func newTestHTTPServer(t *testing.T) *http.Server {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "pong\n")
 	})
+	l, err := net.Listen("tcp", hostPort)
+	if err != nil {
+		t.Fatalf("create listener %v", err)
+	}
 	go func() {
-		err := server.ListenAndServe()
+		err := server.Serve(l)
 		if err != nil && err != http.ErrServerClosed {
 			t.Errorf("starting http server: %v", err)
 		}
