@@ -39,6 +39,9 @@ func main() {
 		if protocol == nil {
 			internal.Fatal(fmt.Errorf("unknown protocol: %s", opts.Protocol))
 		}
+		if opts.DNSResolver != "" {
+			protocol.WithDNSResolver(opts.DNSResolver)
+		}
 		protocols = []*pkg.Protocol{protocol}
 	}
 	logger.Info("Starting ...", "protocols", protocols, "count", opts.Count)

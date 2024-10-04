@@ -8,6 +8,8 @@ import (
 // Options are the flags supported by the command line application.
 type Options struct {
 	// Input flags.
+	//Custom DNS Resolver
+	DNSResolver string
 	// Protocol to use.
 	Protocol string
 	// Number of iterations. Zero means infinite.
@@ -31,6 +33,7 @@ type Options struct {
 
 // Parse fulfills the command line flags provided by the user.
 func (opts *Options) Parse() {
+	flag.StringVar(&opts.DNSResolver, "r", "", "DNS resolution server")
 	flag.StringVar(&opts.Protocol, "p", "", "Test only one protocol")
 	flag.UintVar(&opts.Count, "c", 0, "Number of iterations")
 	flag.DurationVar(
