@@ -8,9 +8,7 @@ import (
 // Options are the flags supported by the command line application.
 type Options struct {
 	// Input flags.
-	//Custom DNS Resolver
-	DNSResolver string
-	// Protocol to use.
+	// Protocol to use. Example: 'http'.
 	Protocol string
 	// Number of iterations. Zero means infinite.
 	Count uint
@@ -20,6 +18,8 @@ type Options struct {
 	Delay time.Duration
 	// Stop after the first successful request.
 	Stop bool
+	// Custom DNS resolver.
+	DNSResolver string
 	// Output flags.
 	// Output in JSON format.
 	JSONOutput bool
@@ -33,7 +33,6 @@ type Options struct {
 
 // Parse fulfills the command line flags provided by the user.
 func (opts *Options) Parse() {
-	flag.StringVar(&opts.DNSResolver, "r", "", "DNS resolution server")
 	flag.StringVar(&opts.Protocol, "p", "", "Test only one protocol")
 	flag.UintVar(&opts.Count, "c", 0, "Number of iterations")
 	flag.DurationVar(
@@ -45,6 +44,7 @@ func (opts *Options) Parse() {
 	flag.BoolVar(
 		&opts.Stop, "s", false, "Stop after the first successful request",
 	)
+	flag.StringVar(&opts.DNSResolver, "r", "", "DNS resolution server")
 	flag.BoolVar(&opts.JSONOutput, "j", false, "Output in JSON format")
 	flag.BoolVar(&opts.NoColor, "nc", false, "Disable color output")
 	flag.BoolVar(&opts.Debug, "dbg", false, "Verbose output")

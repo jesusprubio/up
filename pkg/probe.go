@@ -7,17 +7,13 @@ import (
 	"time"
 )
 
-const tmplRequiredProp = "required property: %s"
-
 // Probe is an experiment to measure the connectivity of a network using
 // different protocols and public servers.
 type Probe struct {
 	// Protocols to use.
-	Protocols []*Protocol
+	Protocols []Protocol
 	// Number of iterations. Zero means infinite.
 	Count uint
-	// Time to wait for a response.
-	Timeout time.Duration
 	// Delay between requests.
 	Delay time.Duration
 	// For debugging purposes.
@@ -29,25 +25,20 @@ type Probe struct {
 // Ensures the probe setup is correct.
 func (p Probe) validate() error {
 	if p.Protocols == nil {
-		return fmt.Errorf(tmplRequiredProp, "Protocols")
-	}
-	for _, proto := range p.Protocols {
-		err := proto.validate()
-		if err != nil {
-			return fmt.Errorf("invalid protocol: %w", err)
-		}
-	}
-	if p.Timeout == 0 {
-		return fmt.Errorf(tmplRequiredProp, "Timeout")
+		return newErrorReqProp("Protocols")
 	}
 	// 'Delay' could be zero.
 	if p.Logger == nil {
-		return fmt.Errorf(tmplRequiredProp, "Logger")
+		return newErrorReqProp("Logger")
 	}
 	if p.ReportCh == nil {
-		return fmt.Errorf(tmplRequiredProp, "ReportCh")
+		return newErrorReqProp("ReportCh")
 	}
 	return nil
+}
+
+func newErrorReqProp(prop string) error {
+	return fmt.Errorf("required property: %s", prop)
 }
 
 // Run the connection requests against the public servers.
@@ -77,26 +68,20 @@ func (p Probe) Run(ctx context.Context) error {
 				case <-ctx.Done():
 					p.Logger.Debug(
 						"Context cancelled between protocols",
-						"count", count, "protocol", proto.ID,
+						"count", count, "protocol", proto,
 					)
 					return nil
 				default:
 					start := time.Now()
-					rhost, err := proto.RHost()
-					if err != nil {
-						return fmt.Errorf("creating remote host: %w", err)
-					}
 					p.Logger.Debug(
-						"New protocol",
-						"count", count, "protocol", proto.ID, "rhost", rhost,
+						"New protocol", "count", count, "protocol", proto,
 					)
-					extra, err := proto.Probe(rhost, p.Timeout)
+					rhost, err := proto.Probe("")
 					report := Report{
-						ProtocolID: proto.ID,
-						RHost:      rhost,
+						ProtocolID: proto.String(),
 						Time:       time.Since(start),
 						Error:      err,
-						Extra:      extra,
+						RHost:      rhost,
 					}
 					p.Logger.Debug(
 						"Sending report back",

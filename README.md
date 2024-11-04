@@ -34,10 +34,6 @@ This will display help for the tool.
 up -h
 ```
 
-### Library
-
-Check [the examples](examples) to see how to use this project in your own code.
-
 ## License
 
 This project is under the MIT License. See the [LICENSE](LICENSE) file for the full text.

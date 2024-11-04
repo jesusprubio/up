@@ -33,16 +33,27 @@ func main() {
 		lvl.Set(slog.LevelDebug)
 	}
 	logger.Debug("Starting ...", "options", opts)
-	protocols := pkg.Protocols
+	dnsProtocol := &pkg.DNS{Timeout: opts.Timeout}
+	if opts.DNSResolver != "" {
+		dnsProtocol.Resolver = opts.DNSResolver
+	}
+	protocols := []pkg.Protocol{
+		&pkg.HTTP{Timeout: opts.Timeout},
+		&pkg.TCP{Timeout: opts.Timeout},
+		dnsProtocol,
+	}
 	if opts.Protocol != "" {
-		protocol := internal.ProtocolByID(opts.Protocol)
+		var protocol pkg.Protocol
+		for _, p := range protocols {
+			if p.String() == opts.Protocol {
+				protocol = p
+				break
+			}
+		}
 		if protocol == nil {
 			internal.Fatal(fmt.Errorf("unknown protocol: %s", opts.Protocol))
 		}
-		if opts.DNSResolver != "" {
-			protocol.WithDNSResolver(opts.DNSResolver)
-		}
-		protocols = []*pkg.Protocol{protocol}
+		protocols = []pkg.Protocol{protocol}
 	}
 	logger.Info("Starting ...", "protocols", protocols, "count", opts.Count)
 	if opts.Help {
@@ -70,7 +81,6 @@ func main() {
 	probe := pkg.Probe{
 		Protocols: protocols,
 		Count:     opts.Count,
-		Timeout:   opts.Timeout,
 		Delay:     opts.Delay,
 		Logger:    logger,
 		ReportCh:  reportCh,
