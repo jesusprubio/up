@@ -44,7 +44,7 @@ func (opts *Options) Parse() {
 	flag.BoolVar(
 		&opts.Stop, "s", false, "Stop after the first successful request",
 	)
-	flag.StringVar(&opts.DNSResolver, "r", "", "DNS resolution server")
+	flag.StringVar(&opts.DNSResolver, "dr", "", "DNS resolution server")
 	flag.BoolVar(&opts.JSONOutput, "j", false, "Output in JSON format")
 	flag.BoolVar(&opts.NoColor, "nc", false, "Disable color output")
 	flag.BoolVar(&opts.Debug, "dbg", false, "Verbose output")
