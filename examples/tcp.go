@@ -7,15 +7,15 @@ import (
 	"os"
 	"time"
 
-	"github.com/jesusprubio/up/pkg"
+	"github.com/jesusprubio/up/internal"
 )
 
 func main() {
 	logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
-	reportCh := make(chan *pkg.Report)
+	reportCh := make(chan *internal.Report)
 	defer close(reportCh)
-	probe := pkg.Probe{
-		Protocols: []pkg.Protocol{&pkg.TCP{Timeout: 2 * time.Second}},
+	probe := internal.Probe{
+		Protocols: []internal.Protocol{&internal.TCP{Timeout: 2 * time.Second}},
 		Count:     3,
 		Logger:    logger,
 		ReportCh:  reportCh,

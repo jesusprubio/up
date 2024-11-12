@@ -1,3 +1,4 @@
+// Package internal provides the core functionality of the application.
 package internal
 
 import (

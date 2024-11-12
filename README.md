@@ -15,10 +15,6 @@ Troubleshoot problems with your Internet connection based on different
 go install -v github.com/jesusprubio/up@latest
 ```
 
-### Dependencies
-
-- [Go](https://go.dev/doc/install) stable version.
-
 ## Use
 
 The default behavior is to verify all the [supported protocols](pkg/protocol.go)
@@ -26,12 +22,6 @@ against a randomly selected [public server](pkg/servers.go) for each one.
 
 ```sh
 up
-```
-
-This will display help for the tool.
-
-```sh
-up -h
 ```
 
 ## License

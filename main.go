@@ -13,7 +13,24 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/jesusprubio/up/internal"
-	"github.com/jesusprubio/up/pkg"
+)
+
+const (
+	appName = "up"
+	appDesc = `
+	Troubleshoot problems with your Internet connection based on different
+	protocols and public servers.
+	
+	OUTPUT
+	Details about each request:
+	{Protocol used} {Response time} {Remote server} {Extra info}
+	
+	EXIT STATUS
+	This utility exits with one of the following values:
+	0 At least one response was heard.
+	2 The transmission was successful but no responses were received.
+	1 Any other error occurred.
+	`
 )
 
 // TODO(#39): STDIN piped input.
@@ -33,17 +50,17 @@ func main() {
 		lvl.Set(slog.LevelDebug)
 	}
 	logger.Debug("Starting ...", "options", opts)
-	dnsProtocol := &pkg.DNS{Timeout: opts.Timeout}
+	dnsProtocol := &internal.DNS{Timeout: opts.Timeout}
 	if opts.DNSResolver != "" {
 		dnsProtocol.Resolver = opts.DNSResolver
 	}
-	protocols := []pkg.Protocol{
-		&pkg.HTTP{Timeout: opts.Timeout},
-		&pkg.TCP{Timeout: opts.Timeout},
+	protocols := []internal.Protocol{
+		&internal.HTTP{Timeout: opts.Timeout},
+		&internal.TCP{Timeout: opts.Timeout},
 		dnsProtocol,
 	}
 	if opts.Protocol != "" {
-		var protocol pkg.Protocol
+		var protocol internal.Protocol
 		for _, p := range protocols {
 			if p.String() == opts.Protocol {
 				protocol = p
@@ -51,13 +68,13 @@ func main() {
 			}
 		}
 		if protocol == nil {
-			internal.Fatal(fmt.Errorf("unknown protocol: %s", opts.Protocol))
+			fatal(fmt.Errorf("unknown protocol: %s", opts.Protocol))
 		}
-		protocols = []pkg.Protocol{protocol}
+		protocols = []internal.Protocol{protocol}
 	}
 	logger.Info("Starting ...", "protocols", protocols, "count", opts.Count)
 	if opts.Help {
-		fmt.Fprintf(os.Stderr, "%s\n", internal.AppDesc)
+		fmt.Fprintf(os.Stderr, "%s\n", appDesc)
 		flag.Usage()
 		os.Exit(1)
 	}
@@ -76,9 +93,9 @@ func main() {
 		logger.Debug("Termination signal received")
 		cancel()
 	}()
-	reportCh := make(chan *pkg.Report)
+	reportCh := make(chan *internal.Report)
 	defer close(reportCh)
-	probe := pkg.Probe{
+	probe := internal.Probe{
 		Protocols: protocols,
 		Count:     opts.Count,
 		Delay:     opts.Delay,
@@ -93,11 +110,11 @@ func main() {
 			if opts.JSONOutput {
 				reportJSON, err := json.Marshal(report)
 				if err != nil {
-					internal.Fatal(fmt.Errorf("marshaling report: %w", err))
+					fatal(fmt.Errorf("marshaling report: %w", err))
 				}
 				line = string(reportJSON)
 			} else {
-				line = internal.ReportToLine(report)
+				line = reportToLine(report)
 			}
 			fmt.Println(line)
 			if report.Error == nil {
@@ -111,6 +128,32 @@ func main() {
 	logger.Debug("Running ...", "setup", probe)
 	err := probe.Run(ctx)
 	if err != nil {
-		internal.Fatal(fmt.Errorf("running probe: %w", err))
+		fatal(fmt.Errorf("running probe: %w", err))
 	}
 }
+
+// Fatal logs the error to the standard output and exits with status 1.
+func fatal(err error) {
+	fmt.Fprintf(os.Stderr, "%s: %s\n", appName, err)
+	os.Exit(1)
+}
+
+// ReportToLine returns a human-readable representation of the report.
+func reportToLine(r *internal.Report) string {
+	symbol := green("✔")
+	suffix := r.RHost
+	if r.Error != nil {
+		symbol = red("✘")
+		suffix = r.Error.Error()
+	}
+	return fmt.Sprintf("%s %s", symbol, fmt.Sprintf(
+		"%-15s %-14s %-15s", bold(r.ProtocolID), r.Time, faint(suffix),
+	))
+}
+
+var (
+	green = color.New(color.FgGreen).SprintFunc()
+	red   = color.New(color.FgRed).SprintFunc()
+	bold  = color.New(color.Bold).SprintFunc()
+	faint = color.New(color.Faint).SprintFunc()
+)
