@@ -2,8 +2,9 @@
 
 ## Dependencies
 
-- [Task](https://taskfile.dev/installation/)
+- [Task](https://taskfile.dev/installation)
 - Linters:
+
 ```sh
 task dep
 ```

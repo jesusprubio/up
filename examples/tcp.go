@@ -15,9 +15,8 @@ func main() {
 	reportCh := make(chan *pkg.Report)
 	defer close(reportCh)
 	probe := pkg.Probe{
-		Protocols: []*pkg.Protocol{pkg.Protocols[1]},
+		Protocols: []pkg.Protocol{&pkg.TCP{Timeout: 2 * time.Second}},
 		Count:     3,
-		Timeout:   2 * time.Second,
 		Logger:    logger,
 		ReportCh:  reportCh,
 	}

@@ -14,11 +14,6 @@ type Report struct {
 	RHost string `json:"rhost"`
 	// Response time.
 	Time time.Duration `json:"time"`
-	// Extra information. Depending on the protocol, it could be:
-	// - HTTP: Response code.
-	// - TCP: Local address.
-	// - DNS: Resolved IP addresses.
-	Extra string `json:"extra,omitempty"`
 	// Network error.
 	Error error `json:"error,omitempty"`
 }

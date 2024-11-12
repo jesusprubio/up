@@ -26,17 +26,6 @@ const (
 	`
 )
 
-// ProtocolByID returns the protocol implementation whose ID matches the given
-// one.
-func ProtocolByID(id string) *pkg.Protocol {
-	for _, p := range pkg.Protocols {
-		if p.ID == id {
-			return p
-		}
-	}
-	return nil
-}
-
 // Fatal logs the error to the standard output and exits with status 1.
 func Fatal(err error) {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", appName, err)
@@ -45,15 +34,15 @@ func Fatal(err error) {
 
 // ReportToLine returns a human-readable representation of the report.
 func ReportToLine(r *pkg.Report) string {
-	line := fmt.Sprintf("%-15s %-14s %s", bold(r.ProtocolID), r.Time, r.RHost)
-	suffix := r.Extra
-	prefix := green("✔")
+	symbol := green("✔")
+	suffix := r.RHost
 	if r.Error != nil {
-		prefix = red("✘")
+		symbol = red("✘")
 		suffix = r.Error.Error()
 	}
-	suffix = fmt.Sprintf("(%s)", suffix)
-	return fmt.Sprintf("%s %s %s", prefix, line, faint(suffix))
+	return fmt.Sprintf("%s %s", symbol, fmt.Sprintf(
+		"%-15s %-14s %-15s", bold(r.ProtocolID), r.Time, faint(suffix),
+	))
 }
 
 var (
