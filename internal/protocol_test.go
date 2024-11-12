@@ -20,7 +20,7 @@ func TestHTTPProbe(t *testing.T) {
 		func(t *testing.T) {
 			u := url.URL{Scheme: "http", Host: server.Addr}
 			proto := HTTP{Timeout: tout}
-			got, err := proto.Probe(u.String())
+			got, extra, err := proto.Probe(u.String())
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -28,12 +28,15 @@ func TestHTTPProbe(t *testing.T) {
 			if got != want {
 				t.Fatalf("got %q, want %q", got, want)
 			}
+			if extra != "200 OK" {
+				t.Fatalf("got %q, want %q", extra, "200 OK")
+			}
 		},
 	)
 	t.Run("returns an error if the request fails", func(t *testing.T) {
 		u := url.URL{Scheme: "http", Host: "localhost"}
 		proto := HTTP{Timeout: 1}
-		got, err := proto.Probe(u.String())
+		got, extra, err := proto.Probe(u.String())
 		if got != "" {
 			t.Fatalf("got %q should be zero", got)
 		}
@@ -41,6 +44,9 @@ func TestHTTPProbe(t *testing.T) {
 		want := `Get "http://localhost": context deadline exceeded (Client.Timeout exceeded while awaiting headers)`
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
+		}
+		if extra != "" {
+			t.Fatalf("got %q should be zero", extra)
 		}
 	})
 }
@@ -85,18 +91,28 @@ func TestTCPProbe(t *testing.T) {
 		"returns the remote host/port if the request is successful",
 		func(t *testing.T) {
 			proto := &TCP{Timeout: tout}
-			got, err := proto.Probe(hostPort)
+			got, extra, err := proto.Probe(hostPort)
 			if err != nil {
 				t.Fatal(err)
 			}
 			if got != hostPort {
 				t.Fatalf("got %q, want %q", got, hostPort)
 			}
+			host, port, err := net.SplitHostPort(extra)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if host != "127.0.0.1" {
+				t.Fatalf("got %q, want %q", host, "127.0.0.1")
+			}
+			if port == "" {
+				t.Fatalf("got %q, want a valid port", port)
+			}
 		},
 	)
 	t.Run("returns an error if the request fails", func(t *testing.T) {
 		proto := &TCP{Timeout: 1}
-		got, err := proto.Probe("localhost:80")
+		got, extra, err := proto.Probe("localhost:80")
 		if err == nil {
 			t.Fatal("got nil, want an error")
 		}
@@ -107,6 +123,9 @@ func TestTCPProbe(t *testing.T) {
 		want := "dial tcp: lookup localhost: i/o timeout"
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
+		}
+		if extra != "" {
+			t.Fatalf("got %q should be zero", extra)
 		}
 	})
 }
@@ -130,18 +149,21 @@ func TestDNSProbe(t *testing.T) {
 		func(t *testing.T) {
 			proto := &DNS{Timeout: tout}
 			domain := "google.com"
-			got, err := proto.Probe(domain)
+			got, extra, err := proto.Probe(domain)
 			if err != nil {
 				t.Fatal(err)
 			}
 			if got != domain {
 				t.Fatalf("got %q, want %q", got, domain)
 			}
+			if !net.ParseIP(extra).IsGlobalUnicast() {
+				t.Fatalf("got %q, want a valid IP address", extra)
+			}
 		},
 	)
 	t.Run("returns an error if the request fails", func(t *testing.T) {
 		proto := &DNS{Timeout: 1}
-		got, err := proto.Probe("invalid.aa")
+		got, extra, err := proto.Probe("invalid.aa")
 		if err == nil {
 			t.Fatal("got nil, want an error")
 		}
@@ -155,6 +177,9 @@ func TestDNSProbe(t *testing.T) {
 		}
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
+		}
+		if extra != "" {
+			t.Fatalf("got %q should be zero", extra)
 		}
 	})
 }
