@@ -16,4 +16,6 @@ type Report struct {
 	Time time.Duration `json:"time"`
 	// Network error.
 	Error error `json:"error,omitempty"`
+	// Extra information. Depends on the protocol.
+	Extra string `json:"extra,omitempty"`
 }

@@ -132,23 +132,23 @@ func main() {
 	}
 }
 
-// Fatal logs the error to the standard output and exits with status 1.
+// Logs the error to the standard output and exits with status 1.
 func fatal(err error) {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", appName, err)
 	os.Exit(1)
 }
 
-// ReportToLine returns a human-readable representation of the report.
+// Returns a human-readable representation of the report.
 func reportToLine(r *internal.Report) string {
-	symbol := green("✔")
-	suffix := r.RHost
+	line := fmt.Sprintf("%-15s %-14s %s", bold(r.ProtocolID), r.Time, r.RHost)
+	suffix := r.Extra
+	prefix := green("✔")
 	if r.Error != nil {
-		symbol = red("✘")
+		prefix = red("✘")
 		suffix = r.Error.Error()
 	}
-	return fmt.Sprintf("%s %s", symbol, fmt.Sprintf(
-		"%-15s %-14s %-15s", bold(r.ProtocolID), r.Time, faint(suffix),
-	))
+	suffix = fmt.Sprintf("(%s)", suffix)
+	return fmt.Sprintf("%s %s %s", prefix, line, faint(suffix))
 }
 
 var (

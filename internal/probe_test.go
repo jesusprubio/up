@@ -7,13 +7,14 @@ import (
 )
 
 const testHostPort = "127.0.0.1:3355"
+const testExtra = "test-extra"
 
 type testProtocol struct{}
 
 func (p *testProtocol) String() string { return "test-proto" }
 
-func (p *testProtocol) Probe(target string) (string, error) {
-	return testHostPort, nil
+func (p *testProtocol) Probe(target string) (string, string, error) {
+	return testHostPort, testExtra, nil
 }
 
 func TestProbeValidate(t *testing.T) {
