@@ -25,7 +25,7 @@ func main() {
 			fmt.Println(report)
 		}
 	}()
-	err := probe.Run(context.Background())
+	err := probe.Do(context.Background())
 	if err != nil {
 		fmt.Printf("Error: %s\n", err)
 	}
