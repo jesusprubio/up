@@ -59,7 +59,7 @@ func TestProbeValidate(t *testing.T) {
 func TestProbeRun(t *testing.T) {
 	t.Run("returns an error if the setup is invalid", func(t *testing.T) {
 		p := Probe{}
-		err := p.Run(context.Background())
+		err := p.Do(context.Background())
 		want := "invalid setup: required property: Protocols"
 		if err.Error() != want {
 			t.Fatalf("got %q, want %q", err, want)
@@ -92,7 +92,7 @@ func TestProbeRun(t *testing.T) {
 				}
 			}
 		}(t)
-		err := p.Run(context.Background())
+		err := p.Do(context.Background())
 		if err != nil {
 			t.Fatalf("got %q, want nil", err)
 		}
@@ -105,7 +105,7 @@ func TestProbeRun(t *testing.T) {
 		}
 		ctx, cancel := context.WithCancel(context.Background())
 		cancel()
-		err := p.Run(ctx)
+		err := p.Do(ctx)
 		if err != nil {
 			t.Fatalf("got %q, want nil", err)
 		}

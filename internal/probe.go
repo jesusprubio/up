@@ -41,12 +41,12 @@ func newErrorReqProp(prop string) error {
 	return fmt.Errorf("required property: %s", prop)
 }
 
-// Run the connection requests against the public servers.
+// Do the connection requests against the public servers.
 //
 // The context can be cancelled between different protocol attempts or count
 // iterations.
 // Returns an error if the setup is invalid.
-func (p Probe) Run(ctx context.Context) error {
+func (p Probe) Do(ctx context.Context) error {
 	err := p.validate()
 	if err != nil {
 		return fmt.Errorf("invalid setup: %w", err)

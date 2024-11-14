@@ -126,7 +126,7 @@ func main() {
 		}
 	}()
 	logger.Debug("Running ...", "setup", probe)
-	err := probe.Run(ctx)
+	err := probe.Do(ctx)
 	if err != nil {
 		fatal(fmt.Errorf("running probe: %w", err))
 	}
