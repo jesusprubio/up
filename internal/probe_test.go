@@ -56,7 +56,7 @@ func TestProbeValidate(t *testing.T) {
 	})
 }
 
-func TestProbeRun(t *testing.T) {
+func TestProbeDo(t *testing.T) {
 	t.Run("returns an error if the setup is invalid", func(t *testing.T) {
 		p := Probe{}
 		err := p.Do(context.Background())

@@ -11,9 +11,14 @@ Troubleshoot problems with your Internet connection based on different
 
 ## Install
 
-Binaries for all platforms are provided in the [releases](https://github.com/jesusprubio/up/releases) section.
+### Binary Release
 
-Direct install with go:
+You can manually download a binary release for Linux, OSX, Windows or FreeBSD
+from the [releases](https://github.com/jesusprubio/up/releases) page.
+
+### Go
+
+Please notice `latest` will install the dev version.
 
 ```sh
 go install -ldflags="-s -w" -v github.com/jesusprubio/up@latest
@@ -27,10 +32,6 @@ against a randomly selected [public server](internal/servers.go) for each one.
 ```sh
 up
 ```
-
-## License
-
-This project is under the MIT License. See the [LICENSE](LICENSE) file for the full text.
 
 [doc-img]: https://pkg.go.dev/badge/github.com/jesusprubio/up
 [doc]: https://pkg.go.dev/github.com/jesusprubio/up
