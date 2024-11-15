@@ -11,8 +11,12 @@ Troubleshoot problems with your Internet connection based on different
 
 ## Install
 
+Binaries for all platforms are provided in the [releases](https://github.com/jesusprubio/up/releases) section.
+
+Direct install with go:
+
 ```sh
-go install -v github.com/jesusprubio/up@latest
+go install -ldflags="-s -w" -v github.com/jesusprubio/up@latest
 ```
 
 ## Use
