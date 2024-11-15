@@ -22,3 +22,5 @@ dist/
 .task/
 # VS Code
 .vscode/
+# Binaries
+up
