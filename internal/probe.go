@@ -77,9 +77,10 @@ func (p Probe) Do(ctx context.Context) error {
 						"New protocol", "count", count, "protocol", proto,
 					)
 					rhost, extra, err := proto.Probe("")
+					duration := (time.Since(start) + time.Millisecond).Round(time.Millisecond)
 					report := Report{
 						ProtocolID: proto.String(),
-						Time:       time.Since(start),
+						Time:       duration,
 						Error:      err,
 						RHost:      rhost,
 						Extra:      extra,
