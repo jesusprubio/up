@@ -45,7 +45,18 @@ func main() {
 		Level: lvl,
 	}))
 	var opts internal.Options
-	opts.Parse()
+	stdin, err := internal.ReadStdin()
+	if err != nil {
+		fatal(err)
+	}
+
+	if stdin != "" {
+		opts.DNSResolver = stdin
+	} else {
+
+		opts.Parse()
+	}
+
 	if opts.Debug {
 		lvl.Set(slog.LevelDebug)
 	}
@@ -126,7 +137,7 @@ func main() {
 		}
 	}()
 	logger.Debug("Running ...", "setup", probe)
-	err := probe.Do(ctx)
+	err = probe.Do(ctx)
 	if err != nil {
 		fatal(fmt.Errorf("running probe: %w", err))
 	}
