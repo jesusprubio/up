@@ -3,7 +3,6 @@ package internal
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/fatih/color"
@@ -35,25 +34,31 @@ type Report struct {
 	Format Format
 }
 
-func (r *Report) PrintFormatted(f Format) {
-
+func (r *Report) NewLine(f Format) (string, error) {
 	switch f {
 	case HumanFormat:
-		printHumanFormat(r)
+		return r.newLineHuman(), nil
 	case JSONFormat:
-		printJSONFormat(r)
+		line, err := r.newLineJSON()
+		if err != nil {
+			return "", fmt.Errorf("error generating JSON report: %w", err)
+		}
+		return line, nil
 	case GrepFormat:
-		printGrepableFormat(r)
+		return r.newLineGrep(), nil
+	default:
+		return "", fmt.Errorf("unsupported format: %v", f)
 	}
-
 }
-func printJSONFormat(r *Report) {
+
+func (r *Report) newLineJSON() (string, error) {
 
 	reportJSON, err := json.Marshal(r)
 	if err != nil {
-		log.Fatal(fmt.Errorf("marshaling report: %w", err))
+		return "", fmt.Errorf("marshaling report: %w", err)
+
 	}
-	fmt.Println(string(reportJSON))
+	return string(reportJSON), nil
 }
 
 var (
@@ -63,10 +68,8 @@ var (
 	faint = color.New(color.Faint).SprintFunc()
 )
 
-func printHumanFormat(r *Report) {
-
+func (r *Report) newLineHuman() string {
 	line := fmt.Sprintf("%-15s %-14s %s", bold(r.ProtocolID), r.Time, r.RHost)
-
 	suffix := r.Extra
 	prefix := green("✔")
 	if r.Error != nil {
@@ -75,16 +78,16 @@ func printHumanFormat(r *Report) {
 	}
 	suffix = fmt.Sprintf("(%s)", suffix)
 
-	fmt.Printf("%s %s %s\n", prefix, line, faint(suffix))
+	return fmt.Sprintf("%s %s %s", prefix, line, faint(suffix))
 }
 
-// Output: HTTP/1.1    2024-11-18T15:00:00Z    192.168.1.1    success    Request processed successfully
-func printGrepableFormat(r *Report) {
+// Output: HTTP/1.1    2024-11-18T15:00:00Z    192.168.1.1    success    Request
+// processed successfully
+func (r *Report) newLineGrep() string {
 	status := "success"
 	if r.Error != nil {
 		status = "failure"
 	}
-
 	line := fmt.Sprintf("%s\t%s\t%s\t%s\t%s",
 		r.ProtocolID,
 		r.Time,
@@ -92,5 +95,5 @@ func printGrepableFormat(r *Report) {
 		status,
 		r.Extra,
 	)
-	fmt.Println(line)
+	return line
 }

@@ -32,8 +32,6 @@ const (
 	`
 )
 
-// TODO(#39): STDIN piped input.
-
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -103,17 +101,25 @@ func main() {
 	}
 	go func() {
 		logger.Debug("Listening for reports ...")
-		// Print Report Lines
 		for report := range probe.ReportCh {
 			logger.Debug("New report", "report", *report)
 
-			format := internal.HumanFormat // Default format
-			if opts.JSONOutput {
+			var format internal.Format
+			switch {
+			case opts.JSONOutput:
 				format = internal.JSONFormat
-			} else if opts.GrepFormat {
+			case opts.GrepFormat:
 				format = internal.GrepFormat
+			default:
+				format = internal.HumanFormat
 			}
-			report.PrintFormatted(format)
+			repLine, err := report.NewLine(format)
+
+			if err != nil {
+				fatal(err)
+			}
+
+			fmt.Println(repLine)
 
 			if report.Error == nil {
 				if opts.Stop {
