@@ -41,7 +41,7 @@ func newErrorReqProp(prop string) error {
 	return fmt.Errorf("required property: %s", prop)
 }
 
-// Do the connection requests against the public servers.
+// Do makes the connection requests against the public servers.
 //
 // The context can be cancelled between different protocol attempts or count
 // iterations.
