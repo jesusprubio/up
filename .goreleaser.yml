@@ -71,6 +71,7 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
+
 nfpms:
   - package_name: up
     maintainer: jesusprubio <jesusprubio@gmail.com>
