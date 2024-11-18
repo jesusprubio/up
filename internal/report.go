@@ -16,7 +16,7 @@ import (
 type Format int
 
 const (
-	JsonFormat Format = iota
+	JSONFormat Format = iota
 	HumanFormat
 	GrepFormat
 )
@@ -40,14 +40,14 @@ func (r *Report) PrintFormatted(f Format) {
 	switch f {
 	case HumanFormat:
 		printHumanFormat(r)
-	case JsonFormat:
-		printJsonFormat(r)
+	case JSONFormat:
+		printJSONFormat(r)
 	case GrepFormat:
 		printGrepableFormat(r)
 	}
 
 }
-func printJsonFormat(r *Report) {
+func printJSONFormat(r *Report) {
 
 	reportJSON, err := json.Marshal(r)
 	if err != nil {

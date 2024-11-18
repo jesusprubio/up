@@ -109,7 +109,7 @@ func main() {
 
 			format := internal.HumanFormat // Default format
 			if opts.JSONOutput {
-				format = internal.JsonFormat
+				format = internal.JSONFormat
 			} else if opts.GrepFormat {
 				format = internal.GrepFormat
 			}
