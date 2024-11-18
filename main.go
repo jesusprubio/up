@@ -33,8 +33,6 @@ const (
 	`
 )
 
-// TODO(#39): STDIN piped input.
-
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -49,13 +47,9 @@ func main() {
 	if err != nil {
 		fatal(err)
 	}
+	addrArray := internal.ProcessAddrs(stdin)
 
-	if stdin != "" {
-		opts.DNSResolver = stdin
-	} else {
-
-		opts.Parse()
-	}
+	opts.Parse()
 
 	if opts.Debug {
 		lvl.Set(slog.LevelDebug)
@@ -112,6 +106,7 @@ func main() {
 		Delay:     opts.Delay,
 		Logger:    logger,
 		ReportCh:  reportCh,
+		Addrs:     addrArray,
 	}
 	go func() {
 		logger.Debug("Listening for reports ...")
@@ -136,8 +131,13 @@ func main() {
 			}
 		}
 	}()
+
 	logger.Debug("Running ...", "setup", probe)
 	err = probe.Do(ctx)
+	if err != nil {
+		fatal(fmt.Errorf("running probe: %w", err))
+	}
+
 	if err != nil {
 		fatal(fmt.Errorf("running probe: %w", err))
 	}

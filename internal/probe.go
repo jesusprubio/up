@@ -20,6 +20,8 @@ type Probe struct {
 	Logger *slog.Logger
 	// Channel to send back partial results.
 	ReportCh chan *Report
+	// User defined adresses to check
+	Addrs []string
 }
 
 // Ensures the probe setup is correct.
@@ -53,6 +55,7 @@ func (p Probe) Do(ctx context.Context) error {
 	}
 	p.Logger.Debug("Starting", "setup", p)
 	count := uint(0)
+
 	for {
 		select {
 		case <-ctx.Done():
@@ -76,19 +79,40 @@ func (p Probe) Do(ctx context.Context) error {
 					p.Logger.Debug(
 						"New protocol", "count", count, "protocol", proto,
 					)
-					rhost, extra, err := proto.Probe("")
-					report := Report{
-						ProtocolID: proto.String(),
-						Time:       time.Since(start),
-						Error:      err,
-						RHost:      rhost,
-						Extra:      extra,
+
+					if len(p.Addrs) == 0 {
+						// Original behavior
+						rhost, extra, err := proto.Probe("")
+						report := Report{
+							ProtocolID: proto.String(),
+							Time:       time.Since(start),
+							Error:      err,
+							RHost:      rhost,
+							Extra:      extra,
+						}
+						p.Logger.Debug(
+							"Sending report back",
+							"count", count, "report", report,
+						)
+						p.ReportCh <- &report
+					} else {
+						//  iterate over User provided addresses
+						for _, addr := range p.Addrs {
+							rhost, extra, err := proto.Probe(addr)
+							report := Report{
+								ProtocolID: proto.String(),
+								Time:       time.Since(start),
+								Error:      err,
+								RHost:      rhost,
+								Extra:      extra,
+							}
+							p.Logger.Debug(
+								"Sending report back for address",
+								"count", count, "address", addr, "report", report,
+							)
+							p.ReportCh <- &report
+						}
 					}
-					p.Logger.Debug(
-						"Sending report back",
-						"count", count, "report", report,
-					)
-					p.ReportCh <- &report
 					time.Sleep(p.Delay)
 				}
 			}
