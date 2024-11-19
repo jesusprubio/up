@@ -3,7 +3,9 @@ package internal
 import (
 	"context"
 	"log/slog"
+	"sync"
 	"testing"
+	"time"
 )
 
 const testHostPort = "127.0.0.1:3355"
@@ -105,6 +107,128 @@ func TestProbeDo(t *testing.T) {
 		}
 		ctx, cancel := context.WithCancel(context.Background())
 		cancel()
+		err := p.Do(ctx)
+		if err != nil {
+			t.Fatalf("got %q, want nil", err)
+		}
+	})
+}
+
+// Test [Probe.Do] in parallel  and serial  mode
+func TestProbeDoParallel(t *testing.T) {
+	protocols := []Protocol{&testProtocol{}}
+	testCases := []struct {
+		name     string
+		parallel bool
+		inputLen int
+		count    uint
+	}{
+		{"Serial with no inputs", false, 0, 2},
+		{"Serial with inputs", false, 2, 2},
+		{"Parallel with no inputs", true, 0, 2},
+		{"Parallel with inputs", true, 2, 2},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+
+			ctx, cancel := context.WithTimeout(
+				context.Background(),
+				5*time.Second,
+			)
+			defer cancel()
+
+			reportCh := make(chan *Report, 100)
+
+			var wg sync.WaitGroup
+			wg.Add(1)
+			inputs := make([]string, tc.inputLen)
+			for i := range inputs {
+				inputs[i] = "test-input-" + string('a'+rune(i))
+			}
+
+			reports := make([]*Report, 0, 100)
+
+			var reportsMutex sync.Mutex
+			go func() {
+				defer wg.Done()
+				for report := range reportCh {
+					reportsMutex.Lock()
+					reports = append(reports, report)
+					reportsMutex.Unlock()
+				}
+			}()
+
+			p := Probe{
+				Protocols: protocols,
+				Count:     tc.count,
+				Parallel:  tc.parallel,
+				Logger:    slog.Default(),
+				ReportCh:  reportCh,
+				Input:     inputs,
+			}
+
+			err := p.Do(ctx)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+
+			close(reportCh)
+
+			wg.Wait()
+
+			expectedReportCount := int(
+				tc.count,
+			) * len(
+				protocols,
+			) * (tc.inputLen)
+			if expectedReportCount == 0 {
+				expectedReportCount = int(tc.count) * len(protocols)
+			}
+
+			if len(reports) != expectedReportCount {
+				t.Errorf(
+					"incorrect report count. got %d, want %d",
+					len(reports),
+					expectedReportCount,
+				)
+			}
+
+			for _, report := range reports {
+				if report.ProtocolID != protocols[0].String() {
+					t.Errorf(
+						"incorrect protocol ID. got %q, want %q",
+						report.ProtocolID,
+						protocols[0].String(),
+					)
+				}
+				if report.RHost != testHostPort {
+					t.Errorf(
+						"incorrect remote host. got %q, want %q",
+						report.RHost,
+						testHostPort,
+					)
+				}
+				if report.Error != nil {
+					t.Errorf("unexpected error: %v", report.Error)
+				}
+			}
+		})
+	}
+
+	t.Run("returns nil if context is canceled", func(t *testing.T) {
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel()
+
+		reportCh := make(chan *Report, 10)
+		defer close(reportCh)
+
+		p := Probe{
+			Protocols: protocols,
+			Logger:    slog.Default(),
+			ReportCh:  reportCh,
+		}
+
 		err := p.Do(ctx)
 		if err != nil {
 			t.Fatalf("got %q, want nil", err)
