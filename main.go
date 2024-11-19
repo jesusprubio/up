@@ -109,6 +109,7 @@ func main() {
 		Logger:    logger,
 		ReportCh:  reportCh,
 		Input:     inputs,
+		Parallel:  opts.Parallel,
 	}
 	go func() {
 		logger.Debug("Listening for reports ...")

@@ -29,7 +29,8 @@ type Options struct {
 	// Enable debugging.
 	Debug bool
 	// Show app documentation.
-	Help bool
+	Help     bool
+	Parallel bool
 }
 
 // Parse fulfills the command line flags provided by the user.
@@ -50,5 +51,6 @@ func (opts *Options) Parse() {
 	flag.BoolVar(&opts.NoColor, "nc", false, "Disable color output")
 	flag.BoolVar(&opts.Debug, "dbg", false, "Verbose output")
 	flag.BoolVar(&opts.Help, "h", false, "Show app documentation")
+	flag.BoolVar(&opts.Parallel, "r", false, "Run in parallel")
 	flag.Parse()
 }
