@@ -88,9 +88,6 @@ func (p Probe) Do(ctx context.Context) error {
 						Error:      errMessage,
 						Extra:      extra,
 					}
-					if err != nil {
-						errMessage = err.Error()
-					}
 					p.Logger.Debug(
 						"Sending report back",
 						"count", count, "report", report,
