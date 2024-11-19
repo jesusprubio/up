@@ -45,10 +45,12 @@ func main() {
 	var opts internal.Options
 	stdin, err := internal.ReadStdin()
 	if err != nil {
-		fatal(err)
+		fatal(fmt.Errorf("reading stdin: %w", err))
 	}
-	addrArray := internal.ProcessAddrs(stdin)
-
+	inputs, err := internal.ProcessInputs(stdin)
+	if err != nil {
+		fmt.Printf("failed to process the inputs:\n%v\n", err)
+	}
 	opts.Parse()
 
 	if opts.Debug {
@@ -106,7 +108,7 @@ func main() {
 		Delay:     opts.Delay,
 		Logger:    logger,
 		ReportCh:  reportCh,
-		Addrs:     addrArray,
+		Input:     inputs,
 	}
 	go func() {
 		logger.Debug("Listening for reports ...")

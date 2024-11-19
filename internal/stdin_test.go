@@ -1,39 +1,41 @@
 package internal
 
 import (
-	"fmt"
 	"os"
-	"reflect"
 	"testing"
 )
 
-func Example_validateAddress() {
-	entries := []string{
-		"192.180.33.25",
-		"example.com",
-		"http://192.180.33.25",
-		"https://example.org/path?query=123",
-		"test-domain.org",
-		"256.256.256.256",
-		"invalid@domain",
-		"not-a-domain",
+func TestValidateInput(t *testing.T) {
+	entries := []struct {
+		input    string
+		expected bool
+	}{
+		{"192.180.33.25", true},
+		{"example.com", true},
+		{"http://192.180.33.25", true},
+		{"https://example.org/path?query=123", true},
+		{"test-domain.org", true},
+		{"256.256.256.256", true},
+		{"invalid@domain", false},
+		{"not-a-domain", false},
 	}
 
-	for _, addr := range entries {
-		fmt.Println(addr+":", validateAddress(addr))
+	for _, entry := range entries {
+		t.Run(entry.input, func(t *testing.T) {
+			result := validateInput(entry.input)
+			if result != entry.expected {
+				t.Errorf(
+					"validateInput(%q) = %v; want %v",
+					entry.input,
+					result,
+					entry.expected,
+				)
+			}
+		})
 	}
-	// Output:
-	// 192.180.33.25: true
-	// example.com: true
-	// http://192.180.33.25: true
-	// https://example.org/path?query=123: true
-	// test-domain.org: true
-	// 256.256.256.256: true
-	// invalid@domain: false
-	// not-a-domain: false
 }
 
-func TestReadAndProcessAddrs(t *testing.T) {
+func TestReadAndProcessInputs(t *testing.T) {
 	tests := []struct {
 		name      string
 		input     string
@@ -65,19 +67,26 @@ func TestReadAndProcessAddrs(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 
 			r, w, _ := os.Pipe()
+			defer r.Close()
+
 			os.Stdin = r
-			defer func() {
-				r.Close()
-			}()
 
 			w.Write([]byte(tt.input))
 			w.Close()
 
 			got, _ := ReadStdin()
-			addrs := ProcessAddrs(got)
+			addrs, _ := ProcessInputs(got)
 
-			if !reflect.DeepEqual(addrs, tt.wantAddrs) {
+			if len(addrs) != len(tt.wantAddrs) {
 				t.Errorf("got %v, want %v", addrs, tt.wantAddrs)
+				return
+			}
+
+			for i := range addrs {
+				if addrs[i] != tt.wantAddrs[i] {
+					t.Errorf("got %v, want %v", addrs, tt.wantAddrs)
+					return
+				}
 			}
 		})
 	}
