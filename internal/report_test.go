@@ -41,7 +41,6 @@ func TestReportString(t *testing.T) {
 			t.Fatalf("got %q, want %q", got, want)
 		}
 	})
-
 }
 
 func TestStringJSON(t *testing.T) {
@@ -60,8 +59,7 @@ func TestStringJSON(t *testing.T) {
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
 		}
-	},
-	)
+	})
 	t.Run("returns JSON format for failed probes", func(t *testing.T) {
 		rErr := r
 		rErr.Extra = ""
@@ -74,8 +72,7 @@ func TestStringJSON(t *testing.T) {
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
 		}
-	},
-	)
+	})
 }
 
 func TestStringHuman(t *testing.T) {
@@ -121,8 +118,7 @@ func TestStringGrep(t *testing.T) {
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
 		}
-	},
-	)
+	})
 	t.Run("returns grep format for failed probes", func(t *testing.T) {
 		rErr := r
 		rErr.Extra = ""
@@ -132,6 +128,5 @@ func TestStringGrep(t *testing.T) {
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
 		}
-	},
-	)
+	})
 }
