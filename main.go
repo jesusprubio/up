@@ -99,29 +99,25 @@ func main() {
 		Logger:    logger,
 		ReportCh:  reportCh,
 	}
+	var format internal.Format
+	switch {
+	case opts.JSONOutput:
+		format = internal.JSONFormat
+	case opts.GrepOutput:
+		format = internal.GrepFormat
+	default:
+		format = internal.HumanFormat
+	}
 	go func() {
 		logger.Debug("Listening for reports ...")
 		for report := range probe.ReportCh {
 			logger.Debug("New report", "report", *report)
-
-			var format internal.Format
-			switch {
-			case opts.JSONOutput:
-				format = internal.JSONFormat
-			case opts.GrepFormat:
-				format = internal.GrepFormat
-			default:
-				format = internal.HumanFormat
-			}
-			repLine, err := report.NewLine(format)
-
+			repLine, err := report.String(format)
 			if err != nil {
 				fatal(err)
 			}
-
 			fmt.Println(repLine)
-
-			if report.Error == nil {
+			if report.Error == "" {
 				if opts.Stop {
 					logger.Debug("Stopping after first successful request")
 					cancel()
@@ -136,7 +132,7 @@ func main() {
 	}
 }
 
-// Logs the error to the standard output and exits with status 1.
+// Prints the error to the standard output and exits with status 1.
 func fatal(err error) {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", appName, err)
 	os.Exit(1)

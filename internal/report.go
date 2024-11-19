@@ -8,18 +8,18 @@ import (
 	"github.com/fatih/color"
 )
 
-// Report is the result of a connection attempt.
-//
-// Only one of the properties 'Response' or 'Error' is set.
-
+// Format is the output format of the report.
 type Format int
 
 const (
-	JSONFormat Format = iota
-	HumanFormat
+	HumanFormat Format = iota
+	JSONFormat
 	GrepFormat
 )
 
+// Report is the result of a connection attempt.
+//
+// Only one of the properties 'Response' or 'Error' is set.
 type Report struct {
 	// Protocol used to connect to.
 	ProtocolID string `json:"protocol"`
@@ -28,37 +28,52 @@ type Report struct {
 	// Response time.
 	Time time.Duration `json:"time"`
 	// Network error.
-	Error error `json:"error,omitempty"`
+	Error string `json:"error,omitempty"`
 	// Extra information. Depends on the protocol.
-	Extra  string `json:"extra,omitempty"`
-	Format Format
+	Extra string `json:"extra,omitempty"`
 }
 
-func (r *Report) NewLine(f Format) (string, error) {
-	switch f {
+// String returns a string representation of the report.
+func (r *Report) String(format Format) (string, error) {
+	switch format {
 	case HumanFormat:
-		return r.newLineHuman(), nil
+		return r.stringHuman(), nil
 	case JSONFormat:
-		line, err := r.newLineJSON()
+		line, err := r.stringJSON()
 		if err != nil {
 			return "", fmt.Errorf("error generating JSON report: %w", err)
 		}
 		return line, nil
 	case GrepFormat:
-		return r.newLineGrep(), nil
+		return r.stringGrep(), nil
 	default:
-		return "", fmt.Errorf("unsupported format: %v", f)
+		return "", fmt.Errorf("unsupported format: %v", format)
 	}
 }
 
-func (r *Report) newLineJSON() (string, error) {
-
+// Returns the report in JSON format.
+// Example:
+// '{"protocol":"tcp","rhost":"64.6.65.6:53","time":13433165,"extra":"192.168.1.177:39384"}'
+func (r *Report) stringJSON() (string, error) {
 	reportJSON, err := json.Marshal(r)
 	if err != nil {
 		return "", fmt.Errorf("marshaling report: %w", err)
-
 	}
 	return string(reportJSON), nil
+}
+
+// Returns the report in human readable format.
+// Example: '✔ tcp    100.077875ms   77.88.8.8:53 (192.168.1.177:43586)
+func (r *Report) stringHuman() string {
+	line := fmt.Sprintf("%-15s %-14s %s", bold(r.ProtocolID), r.Time, r.RHost)
+	suffix := r.Extra
+	prefix := green("✔")
+	if r.Error != "" {
+		prefix = red("✘")
+		suffix = r.Error
+	}
+	suffix = fmt.Sprintf("(%s)", suffix)
+	return fmt.Sprintf("%s %s %s", prefix, line, faint(suffix))
 }
 
 var (
@@ -68,32 +83,20 @@ var (
 	faint = color.New(color.Faint).SprintFunc()
 )
 
-func (r *Report) newLineHuman() string {
-	line := fmt.Sprintf("%-15s %-14s %s", bold(r.ProtocolID), r.Time, r.RHost)
-	suffix := r.Extra
-	prefix := green("✔")
-	if r.Error != nil {
-		prefix = red("✘")
-		suffix = r.Error.Error()
+// Returns the report in a grepable format.
+//
+// Example: 'tcp     13.944825ms     195.46.39.40:53 success 192.168.1.177:43296
+func (r *Report) stringGrep() string {
+	status := "ok"
+	if r.Error != "" {
+		status = "error"
 	}
-	suffix = fmt.Sprintf("(%s)", suffix)
-
-	return fmt.Sprintf("%s %s %s", prefix, line, faint(suffix))
-}
-
-// Output: HTTP/1.1    2024-11-18T15:00:00Z    192.168.1.1    success    Request
-// processed successfully
-func (r *Report) newLineGrep() string {
-	status := "success"
-	if r.Error != nil {
-		status = "failure"
+	suffix := r.Extra
+	if r.Error != "" {
+		suffix = r.Error
 	}
 	line := fmt.Sprintf("%s\t%s\t%s\t%s\t%s",
-		r.ProtocolID,
-		r.Time,
-		r.RHost,
-		status,
-		r.Extra,
+		r.ProtocolID, r.Time, r.RHost, status, suffix,
 	)
 	return line
 }

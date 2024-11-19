@@ -76,13 +76,20 @@ func (p Probe) Do(ctx context.Context) error {
 					p.Logger.Debug(
 						"New protocol", "count", count, "protocol", proto,
 					)
+					var errMessage string
 					rhost, extra, err := proto.Probe("")
+					if err != nil {
+						errMessage = err.Error()
+					}
 					report := Report{
 						ProtocolID: proto.String(),
-						Time:       time.Since(start),
-						Error:      err,
 						RHost:      rhost,
+						Time:       time.Since(start),
+						Error:      errMessage,
 						Extra:      extra,
+					}
+					if err != nil {
+						errMessage = err.Error()
 					}
 					p.Logger.Debug(
 						"Sending report back",
