@@ -1,4 +1,3 @@
-// Package main implements a simple CLI to use the library.
 package main
 
 import (
@@ -9,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/jesusprubio/up/internal"
@@ -35,18 +35,24 @@ const (
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	// Only used for debugging.
+
+	// Logging setup
 	lvl := new(slog.LevelVar)
 	lvl.Set(slog.LevelError)
 	logger := slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{
 		Level: lvl,
 	}))
+
+	// Parse options
 	var opts internal.Options
 	opts.Parse()
 	if opts.Debug {
 		lvl.Set(slog.LevelDebug)
 	}
+
 	logger.Debug("Starting ...", "options", opts)
+
+	// Protocol initialization
 	dnsProtocol := &internal.DNS{Timeout: opts.Timeout}
 	if opts.DNSResolver != "" {
 		dnsProtocol.Resolver = opts.DNSResolver
@@ -69,18 +75,19 @@ func main() {
 		}
 		protocols = []internal.Protocol{protocol}
 	}
-	logger.Info("Starting ...", "protocols", protocols, "count", opts.Count)
+
+	// Help message
 	if opts.Help {
 		fmt.Fprintf(os.Stderr, "%s\n", appDesc)
 		flag.Usage()
 		os.Exit(1)
 	}
+
 	if opts.NoColor {
 		color.NoColor = true
 	}
-	// To wait for termination signals.
-	// - 'Interrupt': Ctrl+C from terminal.
-	// - 'SIGTERM': Sent from Kubernetes.
+
+	// Handle termination signals
 	sigCh := make(chan os.Signal, 1)
 	defer close(sigCh)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
@@ -90,8 +97,10 @@ func main() {
 		logger.Debug("Termination signal received")
 		cancel()
 	}()
+
 	reportCh := make(chan *internal.Report)
 	defer close(reportCh)
+
 	probe := internal.Probe{
 		Protocols: protocols,
 		Count:     opts.Count,
@@ -99,11 +108,17 @@ func main() {
 		Logger:    logger,
 		ReportCh:  reportCh,
 	}
+
+	// Variables to track highest and lowest response times
+	var maxTime, minTime time.Duration
+	firstReport := true
+
 	go func() {
 		logger.Debug("Listening for reports ...")
 		for report := range probe.ReportCh {
 			logger.Debug("New report", "report", *report)
 
+			// Determine output format
 			var format internal.Format
 			switch {
 			case opts.JSONOutput:
@@ -113,15 +128,30 @@ func main() {
 			default:
 				format = internal.HumanFormat
 			}
-			repLine, err := report.NewLine(format)
 
+			repLine, err := report.NewLine(format)
 			if err != nil {
 				fatal(err)
 			}
 
+			// Print report line
 			fmt.Println(repLine)
 
+			// Update highest and lowest response times
 			if report.Error == nil {
+				if firstReport {
+					minTime, maxTime = report.Time, report.Time
+					firstReport = false
+				} else {
+					if report.Time < minTime {
+						minTime = report.Time
+					}
+					if report.Time > maxTime {
+						maxTime = report.Time
+					}
+				}
+
+				// Stop if requested
 				if opts.Stop {
 					logger.Debug("Stopping after first successful request")
 					cancel()
@@ -129,10 +159,21 @@ func main() {
 			}
 		}
 	}()
+
 	logger.Debug("Running ...", "setup", probe)
+
+	// Run the probe
 	err := probe.Do(ctx)
 	if err != nil {
 		fatal(fmt.Errorf("running probe: %w", err))
+	}
+
+	// Print highest and lowest response times after the probe completes
+	if !firstReport {
+		fmt.Printf("Highest response time: %v\n", maxTime)
+		fmt.Printf("Lowest response time: %v\n", minTime)
+	} else {
+		fmt.Println("No successful responses received.")
 	}
 }
 
