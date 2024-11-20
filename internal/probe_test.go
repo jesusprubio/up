@@ -87,7 +87,7 @@ func TestProbeDo(t *testing.T) {
 				if report.Time == 0 {
 					t.Errorf("got %q, want > 0", report.Time)
 				}
-				if report.Error != nil {
+				if report.Error != "" {
 					t.Errorf("got %q, want nil", report.Error)
 				}
 			}

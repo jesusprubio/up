@@ -3,7 +3,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"flag"
 	"fmt"
 	"log/slog"
@@ -109,22 +108,25 @@ func main() {
 		ReportCh:  reportCh,
 		Input:     inputs,
 	}
+	var format internal.Format
+	switch {
+	case opts.JSONOutput:
+		format = internal.JSONFormat
+	case opts.GrepOutput:
+		format = internal.GrepFormat
+	default:
+		format = internal.HumanFormat
+	}
 	go func() {
 		logger.Debug("Listening for reports ...")
 		for report := range probe.ReportCh {
 			logger.Debug("New report", "report", *report)
-			var line string
-			if opts.JSONOutput {
-				reportJSON, err := json.Marshal(report)
-				if err != nil {
-					fatal(fmt.Errorf("marshaling report: %w", err))
-				}
-				line = string(reportJSON)
-			} else {
-				line = reportToLine(report)
+			repLine, err := report.String(format)
+			if err != nil {
+				fatal(err)
 			}
-			fmt.Println(line)
-			if report.Error == nil {
+			fmt.Println(repLine)
+			if report.Error == "" {
 				if opts.Stop {
 					logger.Debug("Stopping after first successful request")
 					cancel()
@@ -139,28 +141,8 @@ func main() {
 	}
 }
 
-// Logs the error to the standard output and exits with status 1.
+// Prints the error to the standard output and exits with status 1.
 func fatal(err error) {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", appName, err)
 	os.Exit(1)
 }
-
-// Returns a human-readable representation of the report.
-func reportToLine(r *internal.Report) string {
-	line := fmt.Sprintf("%-15s %-14s %s", bold(r.ProtocolID), r.Time, r.RHost)
-	suffix := r.Extra
-	prefix := green("✔")
-	if r.Error != nil {
-		prefix = red("✘")
-		suffix = r.Error.Error()
-	}
-	suffix = fmt.Sprintf("(%s)", suffix)
-	return fmt.Sprintf("%s %s %s", prefix, line, faint(suffix))
-}
-
-var (
-	green = color.New(color.FgGreen).SprintFunc()
-	red   = color.New(color.FgRed).SprintFunc()
-	bold  = color.New(color.Bold).SprintFunc()
-	faint = color.New(color.Faint).SprintFunc()
-)

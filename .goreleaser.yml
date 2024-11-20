@@ -71,3 +71,61 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
+
+nfpms:
+  - package_name: up
+    maintainer: jesusprubio <jesusprubio@gmail.com>
+    homepage: https://github.com/jesusprubio/up
+    description: |
+      Troubleshoot problems with your Internet connection based on different protocols and well-known public servers.
+    license: MIT
+    formats:
+      - apk
+      - deb
+      - rpm
+      - archlinux
+    bindir: /usr/bin
+    dependencies:
+      - git
+
+winget:
+  - name: up
+    publisher: jesusprubio
+    license: MIT
+    short_description: Internet connection troubleshooting tool
+    description: |
+      Troubleshoot problems with your Internet connection based on different protocols and well-known public servers.
+    homepage: https://github.com/jesusprubio/up
+    tags:
+      - networking
+      - troubleshooting
+      - utility
+    repository:
+      owner: jesusprubio
+      name: winget-pkgs
+      branch: main
+      token: "{{ .Env.GITHUB_TOKEN }}"
+      pull_request:
+        enabled: true
+        draft: false
+        base:
+          owner: microsoft
+          name: winget-pkgs
+          branch: main
+
+brews:
+  - repository:
+      owner: jesusprubio
+      name: homebrew-tap
+    commit_author:
+      name: jesusprubio
+      email: jesusprubio@gmail.com
+    homepage: https://github.com/jesusprubio/up
+    description: |
+      Troubleshoot problems with your Internet connection based on different protocols and well-known public servers.
+    license: MIT
+    test: |
+      system "#{bin}/up --version"
+    dependencies:
+      - git
+

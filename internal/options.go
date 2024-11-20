@@ -24,6 +24,8 @@ type Options struct {
 	// Output flags.
 	// Output in JSON format.
 	JSONOutput bool
+	// Output in grepable format.
+	GrepOutput bool
 	// Disable color output.
 	NoColor bool
 	// Enable debugging.
@@ -47,6 +49,7 @@ func (opts *Options) Parse() {
 	)
 	flag.StringVar(&opts.DNSResolver, "dr", "", "DNS resolution server")
 	flag.BoolVar(&opts.JSONOutput, "j", false, "Output in JSON format")
+	flag.BoolVar(&opts.GrepOutput, "g", false, "Output in grepable format")
 	flag.BoolVar(&opts.NoColor, "nc", false, "Disable color output")
 	flag.BoolVar(&opts.Debug, "dbg", false, "Verbose output")
 	flag.BoolVar(&opts.Help, "h", false, "Show app documentation")
