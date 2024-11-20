@@ -20,6 +20,8 @@ type Probe struct {
 	Logger *slog.Logger
 	// Channel to send back partial results.
 	ReportCh chan *Report
+	// URLs (HTTP), host/port strings (TCP) or domains (DNS).
+	Input []string
 }
 
 // Ensures the probe setup is correct.
@@ -76,34 +78,51 @@ func (p Probe) Do(ctx context.Context) error {
 					p.Logger.Debug(
 						"New protocol", "count", count, "protocol", proto,
 					)
-					var errMessage string
-					rhost, extra, err := proto.Probe("")
-					if err != nil {
-						errMessage = err.Error()
+					if len(p.Input) == 0 {
+						// Probe default list of urls
+						rhost, extra, err := proto.Probe("")
+						report := Report{
+							ProtocolID: proto.String(),
+							Time:       time.Since(start),
+							Error:      err,
+							RHost:      rhost,
+							Extra:      extra,
+						}
+						p.Logger.Debug(
+							"Sending report back",
+							"count", count, "report", report,
+						)
+						p.ReportCh <- &report
+						time.Sleep(p.Delay)
+						continue
 					}
-					report := Report{
-						ProtocolID: proto.String(),
-						RHost:      rhost,
-						Time:       time.Since(start),
-						Error:      errMessage,
-						Extra:      extra,
+
+					// iterate over User provided inputs
+					for _, addr := range p.Input {
+						rhost, extra, err := proto.Probe(addr)
+						report := Report{
+							ProtocolID: proto.String(),
+							Time:       time.Since(start),
+							Error:      err,
+							RHost:      rhost,
+							Extra:      extra,
+						}
+						p.Logger.Debug(
+							"Sending report back for address",
+							"count", count, "address", addr, "report", report,
+						)
+						p.ReportCh <- &report
+						time.Sleep(p.Delay)
 					}
-					p.Logger.Debug(
-						"Sending report back",
-						"count", count, "report", report,
-					)
-					p.ReportCh <- &report
-					time.Sleep(p.Delay)
 				}
+				time.Sleep(p.Delay)
 			}
-			p.Logger.Debug(
-				"Iteration finished", "count", count, "p.Count", p.Count,
-			)
-			count++
-			if count == p.Count {
-				p.Logger.Debug("Count limit reached", "count", count)
-				return nil
-			}
+		}
+		p.Logger.Debug("Iteration finished", "count", count, "p.Count", p.Count)
+		count++
+		if count == p.Count {
+			p.Logger.Debug("Count limit reached", "count", count)
+			return nil
 		}
 	}
 }

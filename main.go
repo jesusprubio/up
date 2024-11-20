@@ -42,6 +42,14 @@ func main() {
 		Level: lvl,
 	}))
 	var opts internal.Options
+	stdin, err := internal.ReadStdin()
+	if err != nil {
+		fatal(fmt.Errorf("reading stdin: %w", err))
+	}
+	inputs, err := internal.ProcessInputs(stdin)
+	if err != nil {
+		fatal(fmt.Errorf("failed to process the inputs: %w", err))
+	}
 	opts.Parse()
 	if opts.Debug {
 		lvl.Set(slog.LevelDebug)
@@ -98,6 +106,7 @@ func main() {
 		Delay:     opts.Delay,
 		Logger:    logger,
 		ReportCh:  reportCh,
+		Input:     inputs,
 	}
 	var format internal.Format
 	switch {
@@ -126,7 +135,7 @@ func main() {
 		}
 	}()
 	logger.Debug("Running ...", "setup", probe)
-	err := probe.Do(ctx)
+	err = probe.Do(ctx)
 	if err != nil {
 		fatal(fmt.Errorf("running probe: %w", err))
 	}
