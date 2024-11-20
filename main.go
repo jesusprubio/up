@@ -49,10 +49,9 @@ func main() {
 	}
 	inputs, err := internal.ProcessInputs(stdin)
 	if err != nil {
-		fmt.Printf("failed to process the inputs:\n%v\n", err)
+		fatal(fmt.Errorf("failed to process the inputs: %w", err))
 	}
 	opts.Parse()
-
 	if opts.Debug {
 		lvl.Set(slog.LevelDebug)
 	}
@@ -133,13 +132,8 @@ func main() {
 			}
 		}
 	}()
-
 	logger.Debug("Running ...", "setup", probe)
 	err = probe.Do(ctx)
-	if err != nil {
-		fatal(fmt.Errorf("running probe: %w", err))
-	}
-
 	if err != nil {
 		fatal(fmt.Errorf("running probe: %w", err))
 	}

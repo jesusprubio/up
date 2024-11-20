@@ -20,7 +20,7 @@ type Probe struct {
 	Logger *slog.Logger
 	// Channel to send back partial results.
 	ReportCh chan *Report
-	//URLs (HTTP), host/port strings (TCP) or domains (DNS).
+	// URLs (HTTP), host/port strings (TCP) or domains (DNS).
 	Input []string
 }
 
@@ -118,9 +118,7 @@ func (p Probe) Do(ctx context.Context) error {
 				time.Sleep(p.Delay)
 			}
 		}
-		p.Logger.Debug(
-			"Iteration finished", "count", count, "p.Count", p.Count,
-		)
+		p.Logger.Debug("Iteration finished", "count", count, "p.Count", p.Count)
 		count++
 		if count == p.Count {
 			p.Logger.Debug("Count limit reached", "count", count)
