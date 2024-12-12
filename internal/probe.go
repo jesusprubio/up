@@ -24,6 +24,13 @@ type Probe struct {
 	Input []string
 }
 
+func errorToString(err error) string {
+	if err != nil {
+		return err.Error()
+	}
+	return ""
+}
+
 // Ensures the probe setup is correct.
 func (p Probe) validate() error {
 	if p.Protocols == nil {
@@ -84,7 +91,7 @@ func (p Probe) Do(ctx context.Context) error {
 						report := Report{
 							ProtocolID: proto.String(),
 							Time:       time.Since(start),
-							Error:      err,
+							Error:      errorToString(err),
 							RHost:      rhost,
 							Extra:      extra,
 						}
@@ -103,7 +110,7 @@ func (p Probe) Do(ctx context.Context) error {
 						report := Report{
 							ProtocolID: proto.String(),
 							Time:       time.Since(start),
-							Error:      err,
+							Error:      errorToString(err),
 							RHost:      rhost,
 							Extra:      extra,
 						}
