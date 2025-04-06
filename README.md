@@ -31,6 +31,10 @@ against a randomly selected [public server](internal/servers.go) for each one.
 
 ```sh
 up
+up -p http
+up -p http -c 3
+up -p http -tg example.com
+cat testdata/stdin-urls.txt | go run . -p http
 ```
 
 [doc-img]: https://pkg.go.dev/badge/github.com/jesusprubio/up

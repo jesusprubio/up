@@ -7,11 +7,10 @@ import (
 	"time"
 )
 
-// Probe is an experiment to measure the connectivity of a network using
-// different protocols and public servers.
+// Probe is an experiment to measure the connectivity of a network.
 type Probe struct {
-	// Protocols to use.
-	Protocols []Protocol
+	// Protocol to use.
+	Proto Protocol
 	// Number of iterations. Zero means infinite.
 	Count uint
 	// Delay between requests.
@@ -20,14 +19,15 @@ type Probe struct {
 	Logger *slog.Logger
 	// Channel to send back partial results.
 	ReportCh chan *Report
-	// URLs (HTTP), host/port strings (TCP) or domains (DNS).
-	Input []string
+	// Optional. Where to point the probe.
+	// URL (HTTP), host/port string (TCP) or domain (DNS).
+	Target string
 }
 
 // Ensures the probe setup is correct.
 func (p Probe) validate() error {
-	if p.Protocols == nil {
-		return newErrorReqProp("Protocols")
+	if p.Proto == nil {
+		return newErrorReqProp("Proto")
 	}
 	// 'Delay' could be zero.
 	if p.Logger == nil {
@@ -58,71 +58,39 @@ func (p Probe) Do(ctx context.Context) error {
 	for {
 		select {
 		case <-ctx.Done():
-			p.Logger.Debug(
-				"Context cancelled between iterations",
-				"count", count,
-			)
+			p.Logger.Debug("Context cancelled", "count", count)
 			return nil
 		default:
-			p.Logger.Debug("New iteration", "count", count)
-			for _, proto := range p.Protocols {
-				select {
-				case <-ctx.Done():
-					p.Logger.Debug(
-						"Context cancelled between protocols",
-						"count", count, "protocol", proto,
-					)
-					return nil
-				default:
-					start := time.Now()
-					p.Logger.Debug(
-						"New protocol", "count", count, "protocol", proto,
-					)
-					if len(p.Input) == 0 {
-						// Probe default list of urls
-						rhost, extra, err := proto.Probe("")
-						report := Report{
-							ProtocolID: proto.String(),
-							Time:       time.Since(start),
-							Error:      err,
-							RHost:      rhost,
-							Extra:      extra,
-						}
-						p.Logger.Debug(
-							"Sending report back",
-							"count", count, "report", report,
-						)
-						p.ReportCh <- &report
-						time.Sleep(p.Delay)
-						continue
-					}
-
-					// iterate over User provided inputs
-					for _, addr := range p.Input {
-						rhost, extra, err := proto.Probe(addr)
-						report := Report{
-							ProtocolID: proto.String(),
-							Time:       time.Since(start),
-							Error:      err,
-							RHost:      rhost,
-							Extra:      extra,
-						}
-						p.Logger.Debug(
-							"Sending report back for address",
-							"count", count, "address", addr, "report", report,
-						)
-						p.ReportCh <- &report
-						time.Sleep(p.Delay)
-					}
-				}
-				time.Sleep(p.Delay)
+			p.Logger.Debug(
+				"New iteration",
+				"count",
+				count,
+				"protocol",
+				p.Proto,
+				"target",
+				p.Target,
+			)
+			start := time.Now()
+			target, extra, err := p.Proto.Probe(p.Target)
+			var errMsg string
+			if err != nil {
+				errMsg = err.Error()
 			}
-		}
-		p.Logger.Debug("Iteration finished", "count", count, "p.Count", p.Count)
-		count++
-		if count == p.Count {
-			p.Logger.Debug("Count limit reached", "count", count)
-			return nil
+			report := Report{
+				ProtocolID: p.Proto.String(),
+				Time:       time.Since(start),
+				Error:      errMsg,
+				Target:     target,
+				Extra:      extra,
+			}
+			p.Logger.Debug("Sending report back", "report", report)
+			p.ReportCh <- &report
+			time.Sleep(p.Delay)
+			count++
+			if p.Count > 0 && count >= p.Count {
+				p.Logger.Debug("Count limit reached", "count", count)
+				return nil
+			}
 		}
 	}
 }

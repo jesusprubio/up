@@ -24,7 +24,7 @@ type Report struct {
 	// Protocol used to connect to.
 	ProtocolID string `json:"protocol"`
 	// Target used to connect to.
-	RHost string `json:"rhost"`
+	Target string `json:"target"`
 	// Response time.
 	Time time.Duration `json:"time"`
 	// Network error.
@@ -33,7 +33,7 @@ type Report struct {
 	Extra string `json:"extra,omitempty"`
 }
 
-// String returns a string representation of the report.
+// String returns the report ready to be printed.
 func (r *Report) String(format Format) (string, error) {
 	switch format {
 	case HumanFormat:
@@ -53,7 +53,7 @@ func (r *Report) String(format Format) (string, error) {
 
 // Returns the report in JSON format.
 // Example:
-// '{"protocol":"tcp","rhost":"64.6.65.6:53","time":13433165,"extra":"192.168.1.177:39384"}'
+// '{"protocol":"tcp","target":"64.6.65.6:53","time":13433165,"extra":"192.168.1.177:39384"}'
 func (r *Report) stringJSON() (string, error) {
 	reportJSON, err := json.Marshal(r)
 	if err != nil {
@@ -65,7 +65,7 @@ func (r *Report) stringJSON() (string, error) {
 // Returns the report in human readable format.
 // Example: '✔ tcp    100.077875ms   77.88.8.8:53 (192.168.1.177:43586)
 func (r *Report) stringHuman() string {
-	line := fmt.Sprintf("%-15s %-14s %s", bold(r.ProtocolID), r.Time, r.RHost)
+	line := fmt.Sprintf("%-15s %-14s %s", bold(r.ProtocolID), r.Time, r.Target)
 	suffix := r.Extra
 	prefix := green("✔")
 	if r.Error != "" {
@@ -96,7 +96,7 @@ func (r *Report) stringGrep() string {
 		suffix = r.Error
 	}
 	line := fmt.Sprintf("%s\t%s\t%s\t%s\t%s",
-		r.ProtocolID, r.Time, r.RHost, status, suffix,
+		r.ProtocolID, r.Time, r.Target, status, suffix,
 	)
 	return line
 }

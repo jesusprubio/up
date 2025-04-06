@@ -2,8 +2,8 @@ name: CI
 
 on:
   push:
-    branches: main
-    tags: v*
+    branches: [main]
+    tags: [v*]
   pull_request:
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.23.2"
+          go-version: "1.24.2"
       - name: Install Task
         uses: arduino/setup-task@v2
       - name: Install dependencies
