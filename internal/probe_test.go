@@ -18,28 +18,27 @@ func (p *testProtocol) Probe(target string) (string, string, error) {
 }
 
 func TestProbeValidate(t *testing.T) {
-	protocols := []Protocol{&testProtocol{}}
+	proto := &testProtocol{}
+	logger := slog.Default()
+	reportCh := make(chan *Report)
+	defer close(reportCh)
 	t.Run("returns nil with valid setup", func(t *testing.T) {
-		reportCh := make(chan *Report)
-		defer close(reportCh)
-		p := Probe{
-			Protocols: protocols, Logger: slog.Default(), ReportCh: reportCh,
-		}
+		p := Probe{Proto: proto, Logger: logger, ReportCh: reportCh}
 		err := p.validate()
 		if err != nil {
 			t.Fatalf("got %q, want nil", err)
 		}
 	})
-	t.Run("returns an error if 'Protocols' is nil", func(t *testing.T) {
+	t.Run("returns an error if 'Proto' is nil", func(t *testing.T) {
 		p := Probe{}
 		err := p.validate()
-		want := "required property: Protocols"
+		want := "required property: Proto"
 		if err.Error() != want {
 			t.Fatalf("got %q, want %q", err, want)
 		}
 	})
 	t.Run("returns an error if 'Logger' is nil", func(t *testing.T) {
-		p := Probe{Protocols: protocols}
+		p := Probe{Proto: proto}
 		err := p.validate()
 		want := "required property: Logger"
 		if err.Error() != want {
@@ -47,7 +46,7 @@ func TestProbeValidate(t *testing.T) {
 		}
 	})
 	t.Run("returns an error if 'ReportCh' is nil", func(t *testing.T) {
-		p := Probe{Protocols: protocols, Logger: slog.Default()}
+		p := Probe{Proto: proto, Logger: logger}
 		err := p.validate()
 		want := "required property: ReportCh"
 		if err.Error() != want {
@@ -60,29 +59,29 @@ func TestProbeDo(t *testing.T) {
 	t.Run("returns an error if the setup is invalid", func(t *testing.T) {
 		p := Probe{}
 		err := p.Do(context.Background())
-		want := "invalid setup: required property: Protocols"
+		want := "invalid setup: required property: Proto"
 		if err.Error() != want {
 			t.Fatalf("got %q, want %q", err, want)
 		}
 	})
-	protocols := []Protocol{&testProtocol{}}
+	protocol := &testProtocol{}
 	t.Run("sends back the report in the channel", func(t *testing.T) {
 		reportCh := make(chan *Report)
 		defer close(reportCh)
 		p := Probe{
-			Protocols: protocols,
-			Count:     2,
-			Logger:    slog.Default(),
-			ReportCh:  reportCh,
+			Proto:    &testProtocol{},
+			Count:    2,
+			Logger:   slog.Default(),
+			ReportCh: reportCh,
 		}
-		protoID := protocols[0].String()
+		protoID := protocol.String()
 		go func(t *testing.T) {
 			for report := range p.ReportCh {
 				if report.ProtocolID != protoID {
 					t.Errorf("got %q, want %q", report.ProtocolID, protoID)
 				}
-				if report.RHost != testHostPort {
-					t.Errorf("got %q, want %q", report.RHost, testHostPort)
+				if report.Target != testHostPort {
+					t.Errorf("got %q, want %q", report.Target, testHostPort)
 				}
 				if report.Time == 0 {
 					t.Errorf("got %q, want > 0", report.Time)
@@ -101,7 +100,7 @@ func TestProbeDo(t *testing.T) {
 		reportCh := make(chan *Report)
 		defer close(reportCh)
 		p := Probe{
-			Protocols: protocols, Logger: slog.Default(), ReportCh: reportCh,
+			Proto: protocol, Logger: slog.Default(), ReportCh: reportCh,
 		}
 		ctx, cancel := context.WithCancel(context.Background())
 		cancel()

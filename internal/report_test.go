@@ -7,7 +7,7 @@ import (
 func TestReportString(t *testing.T) {
 	r := Report{
 		ProtocolID: "tcp",
-		RHost:      "127.0.0.1:80",
+		Target:     "127.0.0.1:80",
 		Time:       1,
 		Extra:      "extra-0",
 	}
@@ -26,7 +26,7 @@ func TestReportString(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		want := `{"protocol":"tcp","rhost":"127.0.0.1:80","time":1,"extra":"extra-0"}`
+		want := `{"protocol":"tcp","target":"127.0.0.1:80","time":1,"extra":"extra-0"}`
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
 		}
@@ -46,7 +46,7 @@ func TestReportString(t *testing.T) {
 func TestStringJSON(t *testing.T) {
 	r := Report{
 		ProtocolID: "tcp",
-		RHost:      "127.0.0.1:80",
+		Target:     "127.0.0.1:80",
 		Time:       1,
 		Extra:      "extra-0",
 	}
@@ -55,7 +55,7 @@ func TestStringJSON(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		want := `{"protocol":"tcp","rhost":"127.0.0.1:80","time":1,"extra":"extra-0"}`
+		want := `{"protocol":"tcp","target":"127.0.0.1:80","time":1,"extra":"extra-0"}`
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
 		}
@@ -68,7 +68,7 @@ func TestStringJSON(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		want := `{"protocol":"tcp","rhost":"127.0.0.1:80","time":1,"error":"error-0"}`
+		want := `{"protocol":"tcp","target":"127.0.0.1:80","time":1,"error":"error-0"}`
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
 		}
@@ -78,7 +78,7 @@ func TestStringJSON(t *testing.T) {
 func TestStringHuman(t *testing.T) {
 	r := Report{
 		ProtocolID: "tcp",
-		RHost:      "127.0.0.1:80",
+		Target:     "127.0.0.1:80",
 		Time:       1,
 		Extra:      "extra-0",
 	}
@@ -108,7 +108,7 @@ func TestStringHuman(t *testing.T) {
 func TestStringGrep(t *testing.T) {
 	r := Report{
 		ProtocolID: "tcp",
-		RHost:      "127.0.0.1:80",
+		Target:     "127.0.0.1:80",
 		Time:       1,
 		Extra:      "extra-0",
 	}
