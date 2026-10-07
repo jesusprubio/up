@@ -8,20 +8,7 @@ import (
 	"net/url"
 )
 
-const tmplRandom = "creating random number: %w"
-
-// RandomCaptivePortal returns a captive portal URL selected randomly from the
-// list of well-known companies.
-//
-// Returns an error if the random number generator fails.
-func RandomCaptivePortal() (string, error) {
-	count := big.NewInt(int64(len(CaptivePortals)))
-	index, err := rand.Int(rand.Reader, count)
-	if err != nil {
-		return "", fmt.Errorf(tmplRandom, err)
-	}
-	return CaptivePortals[index.Int64()].String(), nil
-}
+const tmplRandom = "creating random %s: %w"
 
 // CaptivePortals are URLs that well-known companies use inspect the network
 // connections of their users.
@@ -68,18 +55,6 @@ var CaptivePortals []*url.URL = []*url.URL{
 	},
 }
 
-// RandomDNSServer returns a randomly selected public DNS server address.
-//
-// Returns an error if the random number generator fails.
-func RandomDNSServer() (string, error) {
-	count := big.NewInt(int64(len(Resolvers)))
-	index, err := rand.Int(rand.Reader, count)
-	if err != nil {
-		return "", fmt.Errorf(tmplRandom, err)
-	}
-	return Resolvers[index.Int64()].String(), nil
-}
-
 // Resolvers is a list of public DNS server IP addresses.
 var Resolvers = []*net.IP{
 	// Cloudflare
@@ -120,14 +95,49 @@ var Resolvers = []*net.IP{
 	{199, 85, 127, 10},
 }
 
-// RandomTCPServer returns a TCP host:port selected randomly from the public DNS
-// servers.
+// RandomCaptivePortal returns a randomly selected captive portal URL from the
+// list of well-known companies.
+//
+// Returns an error if the random number generator fails.
+func RandomCaptivePortal() (string, error) {
+	portal, err := randomItem(CaptivePortals)
+	if err != nil {
+		return "", err
+	}
+	return portal.String(), nil
+}
+
+// Returns a random item from the given slice.
+//
+// Returns an error if the random number generator fails.
+func randomItem[T any](items []T) (T, error) {
+	count := big.NewInt(int64(len(items)))
+	index, err := rand.Int(rand.Reader, count)
+	if err != nil {
+		var zero T
+		return zero, fmt.Errorf(tmplRandom, "item", err)
+	}
+	return items[index.Int64()], nil
+}
+
+// RandomDNSServer returns a randomly selected public DNS server address.
+//
+// Returns an error if the random number generator fails.
+func RandomDNSServer() (string, error) {
+	resolver, err := randomItem(Resolvers)
+	if err != nil {
+		return "", err
+	}
+	return resolver.String(), nil
+}
+
+// RandomTCPServer returns a randomly selected public DNS server address.
 //
 // Returns an error if the random number generator fails.
 func RandomTCPServer() (string, error) {
 	serverAddr, err := RandomDNSServer()
 	if err != nil {
-		return "", fmt.Errorf(tmplRandom, err)
+		return "", fmt.Errorf(tmplRandom, "TCP server", err)
 	}
 	return net.JoinHostPort(serverAddr, "53"), nil
 }
@@ -138,7 +148,7 @@ func RandomTCPServer() (string, error) {
 func RandomDomain() (string, error) {
 	portalURL, err := RandomCaptivePortal()
 	if err != nil {
-		return "", fmt.Errorf(tmplRandom, err)
+		return "", fmt.Errorf(tmplRandom, "domain", err)
 	}
 	u, err := url.Parse(portalURL)
 	if err != nil {

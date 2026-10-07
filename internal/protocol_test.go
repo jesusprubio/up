@@ -162,7 +162,7 @@ func TestDNSProbe(t *testing.T) {
 		},
 	)
 	t.Run("returns an error if the request fails", func(t *testing.T) {
-		proto := &DNS{Timeout: 1}
+		proto := &DNS{Timeout: time.Second}
 		got, extra, err := proto.Probe("invalid.aa")
 		if err == nil {
 			t.Fatal("got nil, want an error")
