@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"cmp"
 	"context"
 	"fmt"
 	"net"
@@ -9,7 +10,7 @@ import (
 )
 
 // Default timeout for the probes.
-const timeout = 5 * time.Second
+const defaultTimeout = 5 * time.Second
 
 // Protocol defines a probe attempt.
 type Protocol interface {
@@ -39,7 +40,7 @@ func (h *HTTP) String() string {
 // The target is a URL.
 // The extra data is the status code.
 func (h *HTTP) Probe(target string) (string, string, error) {
-	cli := &http.Client{Timeout: h.Timeout}
+	cli := &http.Client{Timeout: cmp.Or(h.Timeout, defaultTimeout)}
 	url := target
 	if url == "" {
 		var err error
@@ -82,7 +83,11 @@ func (t *TCP) Probe(target string) (string, string, error) {
 			return "", "", fmt.Errorf("selecting TCP server: %w", err)
 		}
 	}
-	conn, err := net.DialTimeout("tcp", hostPort, t.Timeout)
+	conn, err := net.DialTimeout(
+		"tcp",
+		hostPort,
+		cmp.Or(t.Timeout, defaultTimeout),
+	)
 	if err != nil {
 		return "", "", err
 	}
@@ -111,14 +116,15 @@ func (d *DNS) String() string {
 // The extra data is the first resolved IP address.
 func (d *DNS) Probe(target string) (string, string, error) {
 	var r net.Resolver
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	t := cmp.Or(d.Timeout, defaultTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), t)
 	defer cancel()
 	if d.Resolver != "" {
 		r.PreferGo = true
 		r.Dial = func(ctx context.Context, network, address string) (
 			net.Conn, error,
 		) {
-			nd := net.Dialer{Timeout: d.Timeout}
+			nd := net.Dialer{Timeout: t}
 			return nd.DialContext(ctx, network, fmt.Sprintf(
 				"%s:%s", d.Resolver, "53",
 			))
