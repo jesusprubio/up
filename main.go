@@ -30,7 +30,7 @@ const (
 	EXIT STATUS
 	This utility exits with one of the following values:
 	0 At least one response was heard.
-	2 The transmission was successful but no responses were received.
+	2 The transmission was successful but no responses were rece
 	1 Any other error occurred.
 	`
 	targetConcurrency = 5 // stdin inputs
