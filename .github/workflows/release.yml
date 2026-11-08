@@ -28,9 +28,13 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "1.26.0"
+      - name: Prepare recovery configuration
+        if: github.event_name == 'workflow_dispatch'
+        run: yq '.release.replace_existing_artifacts = true' .goreleaser.yml > "$RUNNER_TEMP/goreleaser-recovery.yml"
       - name: Release
         uses: goreleaser/goreleaser-action@v6
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GORELEASER_CURRENT_TAG: ${{ inputs.version_tag }}
         with:
-          args: release --clean
+          args: ${{ github.event_name == 'workflow_dispatch' && format('release --clean --config "{0}/goreleaser-recovery.yml"', runner.temp) || 'release --clean' }}
