@@ -2,6 +2,11 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      version_tag:
+        description: Existing version tag to release (for example, v1.3.2)
+        required: true
+        type: string
   push:
     tags:
       - "*"
@@ -16,6 +21,9 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/tags/{0}', inputs.version_tag) || github.ref }}
+          fetch-depth: 0
       - name: Install Go
         uses: actions/setup-go@v5
         with:
