@@ -30,7 +30,17 @@ jobs:
           go-version: "1.26.0"
       - name: Prepare recovery configuration
         if: github.event_name == 'workflow_dispatch'
-        run: yq '.release.replace_existing_artifacts = true' .goreleaser.yml > "$RUNNER_TEMP/goreleaser-recovery.yml"
+        run: |
+          if [ "$(grep -c '^release:[[:space:]]*$' .goreleaser.yml || true)" != 1 ]; then
+            echo "::error::Expected exactly one top-level release section in .goreleaser.yml"
+            exit 1
+          fi
+          if grep -Eq '^[[:space:]]+replace_existing_artifacts[[:space:]]*:' .goreleaser.yml; then
+            echo "::error::The release configuration already contains replace_existing_artifacts"
+            exit 1
+          fi
+          awk '/^release:[[:space:]]*$/ { print; print "  replace_existing_artifacts: true"; next } { print }' \
+            .goreleaser.yml > "$RUNNER_TEMP/goreleaser-recovery.yml"
       - name: Release
         uses: goreleaser/goreleaser-action@v6
         env:
