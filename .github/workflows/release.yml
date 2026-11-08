@@ -2,6 +2,11 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      version_tag:
+        description: Existing version tag to release (for example, v1.3.2)
+        required: true
+        type: string
   push:
     tags:
       - "*"
@@ -16,13 +21,30 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/tags/{0}', inputs.version_tag) || github.ref }}
+          fetch-depth: 0
       - name: Install Go
         uses: actions/setup-go@v5
         with:
           go-version: "1.26.0"
+      - name: Prepare recovery configuration
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          if [ "$(grep -c '^release:[[:space:]]*$' .goreleaser.yml || true)" != 1 ]; then
+            echo "::error::Expected exactly one top-level release section in .goreleaser.yml"
+            exit 1
+          fi
+          if grep -Eq '^[[:space:]]+replace_existing_artifacts[[:space:]]*:' .goreleaser.yml; then
+            echo "::error::The release configuration already contains replace_existing_artifacts"
+            exit 1
+          fi
+          awk '/^release:[[:space:]]*$/ { print; print "  replace_existing_artifacts: true"; next } { print }' \
+            .goreleaser.yml > "$RUNNER_TEMP/goreleaser-recovery.yml"
       - name: Release
         uses: goreleaser/goreleaser-action@v6
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GORELEASER_CURRENT_TAG: ${{ inputs.version_tag }}
         with:
-          args: release --clean
+          args: ${{ github.event_name == 'workflow_dispatch' && format('release --clean --config "{0}/goreleaser-recovery.yml"', runner.temp) || 'release --clean' }}
