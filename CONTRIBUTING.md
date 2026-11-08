@@ -2,31 +2,31 @@
 
 ## Dependencies
 
-- [Task](https://taskfile.dev/installation)
+- [GNU Make](https://www.gnu.org/software/make/)
 - Linters:
 
 ```sh
-task dep
+make dep
 ```
 
 ## Develop
 
 ```sh
-task
+make
 ```
 
 ## Test
 
 ```sh
-task vet # linters
-task test
-task fmt # formatters
+make vet # linters
+make test
+make fmt # formatters
 ```
 
 ## Build
 
 ```sh
-task build
+make build
 ```
 
 ## Release

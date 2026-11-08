@@ -18,8 +18,6 @@ go.work
 vendor/
 # Goreleaser
 dist/
-# Taskfile (remote)
-.task/
 # VS Code
 .vscode/
 # Binaries
