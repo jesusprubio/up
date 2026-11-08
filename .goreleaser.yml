@@ -103,7 +103,6 @@ winget:
     repository:
       owner: jesusprubio
       name: winget-pkgs
-      branch: main
       token: "{{ .Env.GITHUB_TOKEN }}"
       pull_request:
         enabled: true
@@ -111,7 +110,7 @@ winget:
         base:
           owner: microsoft
           name: winget-pkgs
-          branch: main
+          branch: master
 
 brews:
   - repository:
