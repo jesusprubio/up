@@ -17,11 +17,9 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "1.24.2"
-      - name: Install Task
-        uses: arduino/setup-task@v2
       - name: Install dependencies
-        run: task dep
+        run: make dep
       - name: Run linters
-        run: task vet
+        run: make vet
       - name: Run tests
-        run: task test
+        run: make test
