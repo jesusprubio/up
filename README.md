@@ -32,10 +32,34 @@ against a randomly selected [public server](internal/servers.go) for each one.
 ```sh
 up
 up -p http
-up -p http -c 3
-up -p http -tg example.com
-cat testdata/stdin-urls.txt | go run . -p http
+up -p http,dns -c 3
+up -p http -tg https://example.com
+up -p dns example.com example.org
+cat testdata/stdin-urls.txt | up -p http
 ```
+
+Every flag has a long version too (`-c` and `--count`), run `up -h` to see all
+of them. Targets (`-tg`, arguments after the flags or standard input) require a
+single protocol.
+
+### Output
+
+```sh
+up -c 3 -j       # JSON lines, one object per request
+up -c 3 -g       # grepable, tab separated
+up -c 3 -sum     # only a summary per protocol at the end
+up -c 3 -sum -j  # summary as a single JSON object
+```
+
+Exit status: `0` at least one response was heard, `2` no responses were
+received, `1` any other error.
+
+### Scripts and AI agents
+
+- Always set a count (`-c`), by default `up` runs forever.
+- Use `-nstd` when not piping targets, to avoid waiting for the standard input.
+- `up -nstd -c 3 -sum -j` gives a short JSON verdict, or check only the exit
+  status.
 
 [doc-img]: https://pkg.go.dev/badge/github.com/jesusprubio/up
 [doc]: https://pkg.go.dev/github.com/jesusprubio/up

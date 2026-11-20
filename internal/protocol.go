@@ -19,7 +19,8 @@ type Protocol interface {
 	String() string
 	// Attempt to check the connectivity to the target.
 	// The target depends on the protocol. For example, for HTTP it's a URL.
-	// Returns the used target or error if the attempt failed. Some protocols
+	// Returns the used target, also when the attempt failed (unless it could
+	// not be selected), and an error if the attempt failed. Some protocols
 	// include an additional string with extra information. For example, the
 	// HTTP protocol returns the status code.
 	Probe(target string) (string, string, error)
@@ -51,11 +52,11 @@ func (h *HTTP) Probe(target string) (string, string, error) {
 	}
 	resp, err := cli.Get(url)
 	if err != nil {
-		return "", "", err
+		return url, "", err
 	}
 	err = resp.Body.Close()
 	if err != nil {
-		return "", "", fmt.Errorf("closing response body: %w", err)
+		return url, "", fmt.Errorf("closing response body: %w", err)
 	}
 	return url, resp.Status, nil
 }
@@ -89,11 +90,11 @@ func (t *TCP) Probe(target string) (string, string, error) {
 		cmp.Or(t.Timeout, defaultTimeout),
 	)
 	if err != nil {
-		return "", "", err
+		return hostPort, "", err
 	}
 	err = conn.Close()
 	if err != nil {
-		return "", "", fmt.Errorf("closing connection: %w", err)
+		return hostPort, "", fmt.Errorf("closing connection: %w", err)
 	}
 	return hostPort, conn.LocalAddr().String(), nil
 }
@@ -140,7 +141,7 @@ func (d *DNS) Probe(target string) (string, string, error) {
 	}
 	addrs, err := r.LookupHost(ctx, domain)
 	if err != nil {
-		return "", "", err
+		return domain, "", err
 	}
 	return domain, addrs[0], nil
 }

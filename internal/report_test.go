@@ -26,7 +26,7 @@ func TestReportString(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		want := `{"protocol":"tcp","target":"127.0.0.1:80","time":1,"extra":"extra-0"}`
+		want := `{"protocol":"tcp","target":"127.0.0.1:80","ok":true,"time_ms":0,"extra":"extra-0"}`
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
 		}
@@ -47,7 +47,7 @@ func TestStringJSON(t *testing.T) {
 	r := Report{
 		ProtocolID: "tcp",
 		Target:     "127.0.0.1:80",
-		Time:       1,
+		Time:       13433165,
 		Extra:      "extra-0",
 	}
 	t.Run("returns JSON format for successful probes", func(t *testing.T) {
@@ -55,7 +55,7 @@ func TestStringJSON(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		want := `{"protocol":"tcp","target":"127.0.0.1:80","time":1,"extra":"extra-0"}`
+		want := `{"protocol":"tcp","target":"127.0.0.1:80","ok":true,"time_ms":13.43,"extra":"extra-0"}`
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
 		}
@@ -68,7 +68,7 @@ func TestStringJSON(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		want := `{"protocol":"tcp","target":"127.0.0.1:80","time":1,"error":"error-0"}`
+		want := `{"protocol":"tcp","target":"127.0.0.1:80","ok":false,"time_ms":13.43,"error":"error-0"}`
 		if got != want {
 			t.Fatalf("got %q, want %q", got, want)
 		}
