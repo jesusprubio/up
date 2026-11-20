@@ -37,8 +37,8 @@ func TestHTTPProbe(t *testing.T) {
 		u := url.URL{Scheme: "http", Host: "localhost"}
 		proto := HTTP{Timeout: 1}
 		got, extra, err := proto.Probe(u.String())
-		if got != "" {
-			t.Fatalf("got %q should be zero", got)
+		if got != u.String() {
+			t.Fatalf("got %q, want %q", got, u.String())
 		}
 		got = err.Error()
 		want := `Get "http://localhost": context deadline exceeded (Client.Timeout exceeded while awaiting headers)`
@@ -116,8 +116,8 @@ func TestTCPProbe(t *testing.T) {
 		if err == nil {
 			t.Fatal("got nil, want an error")
 		}
-		if got != "" {
-			t.Fatalf("got %q should be zero", got)
+		if got != "localhost:80" {
+			t.Fatalf("got %q, want %q", got, "localhost:80")
 		}
 		got = err.Error()
 		want := "dial tcp: lookup localhost: i/o timeout"
@@ -167,8 +167,8 @@ func TestDNSProbe(t *testing.T) {
 		if err == nil {
 			t.Fatal("got nil, want an error")
 		}
-		if got != "" {
-			t.Fatalf("got %q should be zero", got)
+		if got != "invalid.aa" {
+			t.Fatalf("got %q, want %q", got, "invalid.aa")
 		}
 		got = err.Error()
 		want := "lookup invalid.aa: no such host"
